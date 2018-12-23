@@ -1,0 +1,178 @@
+import numpy as np
+from copy import copy
+from abc import ABC, abstractmethod
+
+
+class Factor(ABC):
+
+    def __init__(self, scope):
+        """
+        A base structure for Factor objects.
+
+        Parameters
+        ----------
+        scope: array_like
+            An array of integer values corresponding to the variables in the scope of this Factor.
+
+        References
+        ----------
+        D. Koller, N. Freidman: Probabilistic Graphical Models, Principles and Techniques
+        F. Jensen: Bayesian Networks
+
+        """
+
+        self.scope = np.asarray(scope).astype(np.int32)
+        assert len(np.unique(self.scope)) == len(self.scope)
+
+    def copy(self):
+        """
+        Create a copy of the current Factor.
+
+        """
+
+        return copy(self)
+
+    @abstractmethod
+    def normalise(self, *args, **kwargs):
+        """
+        Normalise the factor's distribution.
+
+        """
+
+        pass
+
+    @abstractmethod
+    def product(self, *other):
+        """
+        Perform the factor product operation on the Factor and target other Factors.
+        """
+
+        pass
+
+    @abstractmethod
+    def maximise(self, *other):
+        """
+        Perform the factor maximisation (marginalisation) operation on the Factor and target other Factors.
+        """
+
+        pass
+
+    @abstractmethod
+    def marginalise(self, *other):
+        """
+        Perform the factor marginalisation operation on the Factor and target other Factors.
+        """
+        pass
+
+    @abstractmethod
+    def reduce(self, *evidence):
+        """
+        Perform the factor reduce operation on the Factor and target other Factors.
+        """
+        pass
+
+    @abstractmethod
+    def vacuous(self, mapping=None):
+        """
+        Generate an 'empty' factor object (like clone, but creates a default distribution)
+        """
+
+        pass
+
+    @abstractmethod
+    def assignment(self, *args):
+        """
+        Returns the value the Factor's distribution at the given assignment.
+        """
+
+        pass
+
+    @abstractmethod
+    def division(self, *args, **kwargs):
+        pass
+
+    @property
+    @abstractmethod
+    def entropy(self):
+        pass
+
+    @property
+    @abstractmethod
+    def parameters(self):
+        pass
+
+    @parameters.setter
+    @abstractmethod
+    def parameters(self, value):
+        pass
+
+    def _operation(self, others, operation, inplace=False, **kwargs):
+        """
+        Perform a specified operation on the factor.
+
+        Parameters
+        ----------
+        others: iterable of BaseFactor-like objects.
+            The Factors upon which the current Factor is to operate.
+        operation: function
+            The function that performs the operation to be applied. Must return a Factor object.
+        inplace: bool
+            Specify whether the operation is to be applied to the current Factor, or returns a new Factor (leaving the
+            current Factor untouched).
+
+        Returns
+        -------
+        out: BaseFactor-like
+            The resulting Factor produced by the operation, either a reference to a new Factor, or the updated current
+            Factor object.
+
+        """
+
+        factor = self
+        for other in tuple(others):  # mildly ugly -> wrap operation outputs?
+            factor = type(self)(*operation(factor, other, **kwargs))
+
+        if inplace:
+            return self._update(factor)
+        else:
+            return factor
+
+    @abstractmethod
+    def subset(self, scope):
+        pass
+
+    def _update(self, factor, *args):
+        """
+        Update the Factor's parameters to match those in the passed Factor object. (Redo this)
+
+        Parameters
+        ----------
+        factor: BaseFactor-like
+            The Factor for which the current Factor's parameters should be updated to reflect.
+
+        """
+
+        self.scope = factor.scope
+        return self
+
+    def __repr__(self):
+        return "{0}({1})".format(type(self).__name__, ",".join([str(x) for x in self.scope]))
+
+    def __mul__(self, other):
+        return self.product(other)
+
+    def __add__(self, other):
+        return self.sum(other)
+
+    def __sub__(self, other):
+        return self.difference(other)
+
+    def __truediv__(self, other):
+        return self.division(other)
+
+    def __iter__(self):
+        for variable in self.scope:
+            yield variable
+
+    def __len__(self):
+        return len(self.scope)
