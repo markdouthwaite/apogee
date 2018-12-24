@@ -7,7 +7,6 @@ class JunctionTree(object):
 
     def __init__(self):
         self.graph = nx.Graph()
-        self._calibrated = False
 
     def add(self, variable, factor, tau, neighbours=None):
         self.graph.add_node(variable, factor=factor, tau=tau)
@@ -23,7 +22,7 @@ class JunctionTree(object):
         for i, attrs in self.graph.nodes.items():
             factor = attrs["factor"]
             for other in factors:
-                if np.all(np.in1d(factor.scope, other.scope)):
+                if len(np.intersect1d(factor.scope, other.scope)) == len(other.scope):
                     factor *= other
                     used.append(other)
             factors = [x for x in factors if x not in used]
@@ -40,7 +39,6 @@ class JunctionTree(object):
                     factor *= self._message(target, source)
 
             attrs.update(factor=factor)
-        self._calibrated = True
 
     def propagate(self):
         while self._message_count() < (2.0 * len(self.graph.edges)):
