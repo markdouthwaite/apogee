@@ -1,34 +1,44 @@
+"""Utility functions for computing entropy."""
+
 import numpy as np
 
 
 def entropy(p: np.ndarray, **kwargs):
+    """Comput the entropy of a vector."""
+
     p = np.clip(p, 1e-16, 1.0 - 1e-16)
     return -np.sum(p * (np.log(p)), **kwargs)
 
 
 def relative_entropy(p: np.ndarray, q: np.ndarray, eps: float = 1e-16, **kwargs):
+    """Compute the Relative Entropy of two vectors."""
+
     p = np.clip(p, eps, 1.0 - eps)
     q = np.clip(q, eps, 1.0 - eps)
     return np.sum(p * (np.log(p / q)), **kwargs)
 
 
 def cross_entropy(p: np.ndarray, q: np.ndarray, **kwargs):
-    """
-    Compute the cross entropy of two discrete probability distributions.
-    """
+    """Compute the cross entropy of two discrete probability distributions."""
 
     return entropy(p, **kwargs) - relative_entropy(p, q, **kwargs)
 
 
 def symmetric_relative_entropy(p: np.ndarray, q: np.ndarray, *args, **kwargs):
+    """Compute the symmetric of relative entropy (K-L Divergence)."""
+
     return relative_entropy(p, q, *args, **kwargs) + relative_entropy(q, p, *args, **kwargs)
 
 
 def kullback_leibler_divergence(*args, **kwargs):
+    """Compute the Kullback-Liebler Divergence of two vectors."""
+
     return relative_entropy(*args, **kwargs)
 
 
 def symmetric_kullback_leibler_divergence(*args, **kwargs):
+    """Compute the symmetric of relative entropy (K-L Divergence). (Wrapper)"""
+
     return symmetric_relative_entropy(*args, **kwargs)
 
 
@@ -59,12 +69,15 @@ def discrete_mutual_information(joint: np.ndarray):
 
 
 def normalised_discrete_mutual_information(joint: np.ndarray, **kwargs):
+    """Compute the discrete, normalised mutual information score for a distribution."""
+
     z = discrete_mutual_information(joint, **kwargs)
     return z / np.log(len(joint))
 
 
 def mutual_information_index(xi, y, normed=True):
     """
+    Compute the Mutual Information Index for a distribution.
 
     References
     ----------
@@ -78,6 +91,8 @@ def mutual_information_index(xi, y, normed=True):
 
 
 def gaussian_mutual_information(a: np.ndarray, b: np.ndarray):
+    """Compute the Gaussian Mutual Information given two vectors."""
+
     saa = np.atleast_2d(np.cov(a))
     sbb = np.atleast_2d(np.cov(b))
     s = np.atleast_2d(np.cov(np.array(np.c_[a, b]).T))

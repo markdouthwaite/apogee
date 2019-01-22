@@ -2,6 +2,8 @@ import numpy as np
 
 
 def scale(*args, **kwargs):
+    """Scale an array. """
+
     # alternative signature.
     return normalise(*args, **kwargs)
 
@@ -21,10 +23,12 @@ def normalise(x, a_min=-np.inf, a_max=np.inf, method="default", **kwargs):
     method: str
         The method of normalisation to be applied.
         'default' - Apply a normalisation transformation such that the array sums to 1.
-        'standard' - Apply standardisation transformation to the array by scaling according to mean and std.
+        'standard' - Apply standardisation transformation to the array by scaling according to mean
+        and std.
         'mean' - Apply a mean normalisation transformation to the array.
         'scale' - Scale the array between specified arbitary bounds 'a' and 'b'.
-        'spectral' - Scale the array such that it has unit spectral radius, then apply arbitrary scaling factor.
+        'spectral' - Scale the array such that it has unit spectral radius, then apply arbitrary
+        scaling factor.
 
     kwargs: see methods
 
@@ -73,7 +77,8 @@ def normalise(x, a_min=-np.inf, a_max=np.inf, method="default", **kwargs):
 
 def spectral_norm(x, a=1.0, axis=None):
     """
-    Scale a (square) array such that it has unit spectral radius multiplied by an arbitrary real scale parameter.
+    Scale a (square) array such that it has unit spectral radius multiplied by an arbitrary real
+    scale parameter.
 
     """
 

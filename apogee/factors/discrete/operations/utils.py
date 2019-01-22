@@ -59,7 +59,9 @@ def format_discrete_marginals(*marginals, **kwargs):
     Returns
     -------
     out: dict
-        
+
+    TODO: Break up this function.
+    
     """
 
     dp = kwargs.get("dp", 4)

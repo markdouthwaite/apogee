@@ -23,8 +23,6 @@ class DiscreteFactor(Factor):
         parameters: array_like, float
             An array of floating point numbers representing the distribution of the factor. The factor expects to
             receive these parameters in log-space. Set the transform keyword to apply a transform to the parameters.
-        transform: func, optional
-            If set, applies the given 'transform' function to the parameter set.
 
         References
         ----------
