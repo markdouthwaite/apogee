@@ -12,7 +12,19 @@ class BayesianNetwork(object):
         "exact-bp": JunctionTree
     }
 
+    _variable_types = {
+        "discrete": Variable
+    }
+
     def __init__(self, engine="exact-bp"):
+        """
+
+        Parameters
+        ----------
+        engine
+
+        """
+
         self._variables = {}
         self._engine = self._inference_engines[engine]
 
@@ -78,20 +90,21 @@ class BayesianNetwork(object):
         json.dump(self.to_dict(), open(filename, "r"), **kwargs)
 
     @classmethod
-    def from_json(cls, filename, engine="exact-bp", **kwargs):
-        data = json.load(open(filename, "r"), **kwargs)
+    def from_dict(cls, data, engine="exact-bp"):
         with cls(engine) as network:
             for variable, config in data.items():
                 network.add(Variable(name=variable, **config))
         return network
 
     @classmethod
+    def from_json(cls, filename, engine="exact-bp", **kwargs):
+        data = json.load(open(filename, "r"), **kwargs)
+        return cls.from_dict(data, engine=engine, **kwargs)
+
+    @classmethod
     def from_hugin(cls, filename, engine="exact-bp", **kwargs):
         data = load_hugin(filename)
-        with cls(engine) as network:
-            for variable, config in data.items():
-                network.add(Variable(name=variable, **config))
-        return network
+        return cls.from_dict(data, engine=engine, **kwargs)
 
     def __len__(self):
         return len(self._variables)

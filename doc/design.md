@@ -30,7 +30,7 @@ with BayesianNetwork() as network:
 
 network.fit()
 
-network.predict({"iris-variant": [5.7, 2.5, 5.0, 2.0]), "light-levels": "good")["plant-health"]
+network.predict({"iris-variant": [5.7, 2.5, 5.0, 2.0], "light-levels": "good")["plant-health"]
 
 {"plant-health": {"fabulous": 0.87, "good": 0.12, "poor": 0.01}}
 
