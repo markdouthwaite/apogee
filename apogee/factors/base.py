@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 
 
 class Factor(ABC):
+    """Abstract Class for Apogee Factors."""
 
     def __init__(self, scope):
         """
@@ -25,65 +26,52 @@ class Factor(ABC):
         assert len(np.unique(self.scope)) == len(self.scope)
 
     def copy(self):
-        """
-        Create a copy of the current Factor.
-
-        """
+        """Create a copy of the current Factor."""
 
         return copy(self)
 
     @abstractmethod
     def normalise(self, *args, **kwargs):
-        """
-        Normalise the factor's distribution.
-
-        """
+        """Normalise the factor's distribution."""
 
         pass
 
     @abstractmethod
     def product(self, *other):
-        """
-        Perform the factor product operation on the Factor and target other Factors.
-        """
+        """Perform the factor product operation on the Factor and target other Factors."""
 
         pass
 
     @abstractmethod
     def maximise(self, *other):
         """
-        Perform the factor maximisation (marginalisation) operation on the Factor and target other Factors.
+        Perform the factor maximisation (marginalisation) operation on the Factor and target
+        other Factors.
         """
 
         pass
 
     @abstractmethod
     def marginalise(self, *other):
-        """
-        Perform the factor marginalisation operation on the Factor and target other Factors.
-        """
+        """Perform the factor marginalisation operation on the Factor and target other Factors."""
+
         pass
 
     @abstractmethod
     def reduce(self, *evidence):
-        """
-        Perform the factor reduce operation on the Factor and target other Factors.
-        """
+        """Perform the factor reduce operation on the Factor and target other Factors."""
+
         pass
 
     @abstractmethod
     def vacuous(self, mapping=None):
-        """
-        Generate an 'empty' factor object (like clone, but creates a default distribution)
-        """
+        """Generate an 'empty' factor object (like clone, but creates a default distribution)"""
 
         pass
 
     @abstractmethod
     def assignment(self, *args):
-        """
-        Returns the value the Factor's distribution at the given assignment.
-        """
+        """Returns the value the Factor's distribution at the given assignment."""
 
         pass
 
@@ -117,14 +105,14 @@ class Factor(ABC):
         operation: function
             The function that performs the operation to be applied. Must return a Factor object.
         inplace: bool
-            Specify whether the operation is to be applied to the current Factor, or returns a new Factor (leaving the
-            current Factor untouched).
+            Specify whether the operation is to be applied to the current Factor, or returns a new
+            Factor (leaving the current Factor untouched).
 
         Returns
         -------
         out: BaseFactor-like
-            The resulting Factor produced by the operation, either a reference to a new Factor, or the updated current
-            Factor object.
+            The resulting Factor produced by the operation, either a reference to a new Factor, or
+            the updated current Factor object.
 
         """
 
