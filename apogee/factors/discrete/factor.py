@@ -15,14 +15,17 @@ class DiscreteFactor(Factor):
         Parameters
         ----------
         scope: array_like, integer
-            An array of integers corresponding to the variables in the scope of the current factor. Note that the
-            ordering of this array is important -- make sure the scope mapping is correct!
+            An array of integers corresponding to the variables in the scope of the current factor.
+            Note that the ordering of this array is important -- make sure the scope mapping is
+            correct!
         cardinality: array_like, integer
-            An array of integers corresponding to the cardinality of each of the variable in the scope of the factor.
-            Once again, note that the order of this array should align exactly with the 'scope' array.
+            An array of integers corresponding to the cardinality of each of the variable in the
+            scope of the factor. Once again, note that the order of this array should align exactly
+            with the 'scope' array.
         parameters: array_like, float
-            An array of floating point numbers representing the distribution of the factor. The factor expects to
-            receive these parameters in log-space. Set the transform keyword to apply a transform to the parameters.
+            An array of floating point numbers representing the distribution of the factor. The
+            factor expects to receive these parameters in log-space. Set the transform keyword to
+            apply a transform to the parameters.
 
         References
         ----------
@@ -56,7 +59,8 @@ class DiscreteFactor(Factor):
         output = []
         for i, z in enumerate(x):
             evidence = [[self.scope[j], z[j-1]] for j in range(1, self.scope[1:].shape[0]+1)]
-            output.append(self.reduce(*evidence, inplace=False).marginalise(*[e[0] for e in evidence]).argmax())
+            output.append(self.reduce(*evidence, inplace=False).marginalise(
+                *[e[0] for e in evidence]).argmax())
         return np.asarray(output)
 
     def sum(self, *others, **kwargs):
@@ -138,7 +142,8 @@ class DiscreteFactor(Factor):
         return ap.entropy(self._parameters)
 
     def index(self, assignment):
-        return assignment_to_index(np.atleast_1d(np.asarray(assignment, dtype=np.int64)), self.cards)
+        return assignment_to_index(
+            np.atleast_1d(np.asarray(assignment, dtype=np.int64)), self.cards)
 
     def vacuous(self, *args, c=1.0, **kwargs):
         return type(self)(self.scope, self.cards, c * np.ones_like(self.parameters), **kwargs)
