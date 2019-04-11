@@ -1,6 +1,8 @@
 numpy
+Cython
 pytest>=3.6
 pytest-cov
 networkx
 scipy
 coveralls
+matplotlib

@@ -1,6 +1,6 @@
 import numpy as np
 import networkx as nx
-from apogee import get_elimination_ordering, union, difference
+from apogee import get_elimination_ordering, union1d, difference1d
 
 
 class JunctionTree(object):
@@ -138,12 +138,13 @@ class JunctionTree(object):
         for variable, reduced_scope in zip(
             *get_elimination_ordering(factor_set.adjacency_matrix)
         ):
-            current_factor_scope = union(
+            current_factor_scope = union1d(
                 *[scope for scope in factor_scopes if variable in scope]
             )
-            current_tau_scope = difference(current_factor_scope, [variable]).tolist()
+            current_tau_scope = difference1d(current_factor_scope, [variable]).tolist()
 
             current_neighbour_scopes = [x for x in factor_scopes if variable in x]
+
             tree.add(
                 variable,
                 factor_set.new_factor(current_factor_scope),
