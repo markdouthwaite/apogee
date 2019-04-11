@@ -27,7 +27,9 @@ def cross_entropy(p: np.ndarray, q: np.ndarray, **kwargs):
 def symmetric_relative_entropy(p: np.ndarray, q: np.ndarray, *args, **kwargs):
     """Compute the symmetric of relative entropy (K-L Divergence)."""
 
-    return relative_entropy(p, q, *args, **kwargs) + relative_entropy(q, p, *args, **kwargs)
+    return relative_entropy(p, q, *args, **kwargs) + relative_entropy(
+        q, p, *args, **kwargs
+    )
 
 
 def kullback_leibler_divergence(*args, **kwargs):
@@ -63,8 +65,10 @@ def discrete_mutual_information(joint: np.ndarray):
     contingency_nm = nz_val / contingency_sum
     outer = pi.take(nzx) * pj.take(nzy)
     log_outer = -np.log(outer) + np.log(pi.sum()) + np.log(pj.sum())
-    mi = (contingency_nm * (log_contingency_nm - np.log(contingency_sum)) +
-          contingency_nm * log_outer)
+    mi = (
+        contingency_nm * (log_contingency_nm - np.log(contingency_sum))
+        + contingency_nm * log_outer
+    )
     return mi.sum()
 
 
@@ -87,7 +91,9 @@ def mutual_information_index(xi, y, normed=True):
 
     """
 
-    return (entropy(y) - entropy(xi)) / entropy(y) if normed else entropy(y) - entropy(xi)
+    return (
+        (entropy(y) - entropy(xi)) / entropy(y) if normed else entropy(y) - entropy(xi)
+    )
 
 
 def gaussian_mutual_information(a: np.ndarray, b: np.ndarray):

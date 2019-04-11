@@ -3,13 +3,24 @@ import functools
 import numpy as np
 
 
-def maximum_likelihood_update(x, states, n=0, alpha=0.0, parameters=None, dtype=np.float32):
+def maximum_likelihood_update(
+    x, states, n=0, alpha=0.0, parameters=None, dtype=np.float32
+):
     var_states = np.unique(states[:, 0], axis=0)
     scope_states = np.unique(states, axis=0)
     neighbour_states = np.unique(states[:, 1:], axis=0)
-    parameters = np.asarray(parameters) if parameters is not None else np.zeros(scope_states.shape[0], dtype=dtype)
+    parameters = (
+        np.asarray(parameters)
+        if parameters is not None
+        else np.zeros(scope_states.shape[0], dtype=dtype)
+    )
     parameters *= n
-    counts = _compute_rowwise_counts(x, np.arange(scope_states.shape[1]), scope_states).astype(dtype) + alpha
+    counts = (
+        _compute_rowwise_counts(
+            x, np.arange(scope_states.shape[1]), scope_states
+        ).astype(dtype)
+        + alpha
+    )
 
     for i in range(counts.shape[0]):
         idx = np.all(np.equal(scope_states[i][1:], scope_states[:, 1:]), axis=1)

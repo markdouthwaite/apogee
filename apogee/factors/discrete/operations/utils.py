@@ -65,7 +65,9 @@ def format_discrete_marginals(*marginals, **kwargs):
     """
 
     dp = kwargs.get("dp", 4)
-    labels = kwargs.get("labels", None)  # this is overridden if 'states' keyword is passed.
+    labels = kwargs.get(
+        "labels", None
+    )  # this is overridden if 'states' keyword is passed.
     states = kwargs.get("states", None)
     squeeze = kwargs.get("squeeze", False)
     space = kwargs.get("space", "p")  # 'prob' probability space, else 'log', log space
@@ -79,8 +81,13 @@ def format_discrete_marginals(*marginals, **kwargs):
         unpack = False
 
     if unpack or states is not None:
-        data = {mgnl.scope[0]: {j: round(p if space == "p" else np.log(p),
-                                         dp) for j, p in enumerate(mgnl.parameters)} for mgnl in marginals}
+        data = {
+            mgnl.scope[0]: {
+                j: round(p if space == "p" else np.log(p), dp)
+                for j, p in enumerate(mgnl.parameters)
+            }
+            for mgnl in marginals
+        }
 
         if states is not None:
             for k, v in data.items():

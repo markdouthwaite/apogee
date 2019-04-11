@@ -3,9 +3,11 @@ import apogee as ap
 from typing import Tuple, Callable
 
 
-def factor_arithmetic(a: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
-                      b: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
-                      op: Callable) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def factor_arithmetic(
+    a: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    b: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
+    op: Callable,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
 
     scope = ap.union(a[0], b[0])  # calculate the new scope.
     maps_a = ap.array_mapping(scope, a[0])  # generate map of scope of a in new scope.

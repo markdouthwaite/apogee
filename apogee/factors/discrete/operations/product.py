@@ -33,5 +33,5 @@ def factor_product(a, b):
     return factor_arithmetic(
         (a.scope, a.cards, a.parameters, a.assignments),
         (b.scope, b.cards, b.parameters, b.assignments),
-        np.multiply
+        np.multiply,
     )

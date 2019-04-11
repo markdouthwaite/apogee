@@ -30,12 +30,14 @@ def get_elimination_ordering(adjacency_matrix):
     count = 0
     ordering = []
     scopes = []
-    while count < adjacency_matrix.shape[0]-1:
+    while count < adjacency_matrix.shape[0] - 1:
         j = find_min_neighbours(adjacency_matrix)
         scopes.append(_node_scope(j, adjacency_matrix))
         adjacency_matrix = eliminate_variable(j, adjacency_matrix)
         ordering.append(j)
         count += 1
 
-    ordering.append([x for x in range(adjacency_matrix.shape[0]) if x not in ordering][0])
+    ordering.append(
+        [x for x in range(adjacency_matrix.shape[0]) if x not in ordering][0]
+    )
     return ordering, scopes

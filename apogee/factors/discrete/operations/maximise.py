@@ -4,9 +4,13 @@ import numpy as np
 
 
 def factor_maximise(a, v):
-    scope = a.scope[np.where(a.scope != v)]  # extract remaining variables from scope scope.
-    f_map = ap.index_map_1d(a.scope, scope)         # create a new map of old scope given new scope.
-    card = a.cards[f_map]                     # extract cardinality of remaining variables
+    scope = a.scope[
+        np.where(a.scope != v)
+    ]  # extract remaining variables from scope scope.
+    f_map = ap.index_map_1d(
+        a.scope, scope
+    )  # create a new map of old scope given new scope.
+    card = a.cards[f_map]  # extract cardinality of remaining variables
     assignments = ap.cartesian_product(*[np.arange(n) for n in card])
     values = np.ones(len(assignments), dtype=np.float64) * -np.inf
 

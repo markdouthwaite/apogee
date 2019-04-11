@@ -4,7 +4,6 @@ from apogee import get_elimination_ordering, union, difference
 
 
 class JunctionTree(object):
-
     def __init__(self):
         self.graph = nx.Graph()
 
@@ -14,7 +13,11 @@ class JunctionTree(object):
             for node, attrs in self.graph.nodes.items():
                 if node != variable:
                     if attrs["tau"] in neighbours:
-                        self.graph.add_edge(variable, node, messages={(variable, node): None, (node, variable): None})
+                        self.graph.add_edge(
+                            variable,
+                            node,
+                            messages={(variable, node): None, (node, variable): None},
+                        )
 
     def initialise(self, factors):
         factors = [factor.copy() for factor in factors]
@@ -75,9 +78,13 @@ class JunctionTree(object):
         if self._message(source, target) is None:
             neighbours = list(nx.neighbors(self.graph, source))
             n_neighbours = len(neighbours)
-            n_received = sum(self._has_received(neighbour, source) for neighbour in neighbours)
+            n_received = sum(
+                self._has_received(neighbour, source) for neighbour in neighbours
+            )
 
-            if n_received == n_neighbours - 1 and not self._has_received(target, source):
+            if n_received == n_neighbours - 1 and not self._has_received(
+                target, source
+            ):
                 return True
             elif n_received == n_neighbours and self._has_received(target, source):
                 return True
@@ -101,7 +108,11 @@ class JunctionTree(object):
             if other != target and self._message(other, source) is not None:
                 source_factor *= self._message(other, source)
 
-        targets = [x for x in source_scope if x not in [x for x in source_scope if x in target_scope]]
+        targets = [
+            x
+            for x in source_scope
+            if x not in [x for x in source_scope if x in target_scope]
+        ]
         source_factor = source_factor.marginalise(*targets)
 
         self.graph.edges[(source, target)]["messages"][(source, target)] = source_factor
@@ -124,12 +135,21 @@ class JunctionTree(object):
         tree = cls()
 
         factor_scopes = [x.scope.tolist() for x in factor_set]
-        for variable, reduced_scope in zip(*get_elimination_ordering(factor_set.adjacency_matrix)):
-            current_factor_scope = union(*[scope for scope in factor_scopes if variable in scope])
+        for variable, reduced_scope in zip(
+            *get_elimination_ordering(factor_set.adjacency_matrix)
+        ):
+            current_factor_scope = union(
+                *[scope for scope in factor_scopes if variable in scope]
+            )
             current_tau_scope = difference(current_factor_scope, [variable]).tolist()
 
             current_neighbour_scopes = [x for x in factor_scopes if variable in x]
-            tree.add(variable, factor_set.new_factor(current_factor_scope), current_tau_scope, current_neighbour_scopes)
+            tree.add(
+                variable,
+                factor_set.new_factor(current_factor_scope),
+                current_tau_scope,
+                current_neighbour_scopes,
+            )
 
             factor_scopes = [scope for scope in factor_scopes if variable not in scope]
 

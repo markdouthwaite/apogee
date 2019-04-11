@@ -33,5 +33,5 @@ def factor_division(a, b):
     return factor_arithmetic(
         (a.scope, a.card, a.params, a.assignments),
         (a.scope, a.card, a.params, a.assignments),
-        np.subtract
+        np.subtract,
     )
