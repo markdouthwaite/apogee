@@ -3,12 +3,20 @@ import apogee as ap
 from .operations import *
 from apogee.factors.base import Factor
 from .optimise import maximum_likelihood_update
-from .operations import factor_product, factor_division, factor_marginalise, factor_maximise, factor_reduce, factor_sum
+from .operations import (
+    factor_product,
+    factor_division,
+    factor_marginalise,
+    factor_maximise,
+    factor_reduce,
+    factor_sum,
+)
 
 
 class DiscreteFactor(Factor):
-
-    def __init__(self, scope, cardinality, parameters=None, alpha=0.0, samples=0, **kwargs):
+    def __init__(
+        self, scope, cardinality, parameters=None, alpha=0.0, samples=0, **kwargs
+    ):
         """
         A class representing a discrete stochastic factor.
 
@@ -47,20 +55,23 @@ class DiscreteFactor(Factor):
         # TODO: add tests.
         if y is not None:
             x = np.c_[y, x]
-        self._parameters = maximum_likelihood_update(x,
-                                                     self.assignments,
-                                                     parameters=self.p,
-                                                     alpha=self._alpha,
-                                                     n=self._samples)
+        self._parameters = maximum_likelihood_update(
+            x, self.assignments, parameters=self.p, alpha=self._alpha, n=self._samples
+        )
         self._samples += x.shape[0]
         return self
 
     def predict(self, x):
         output = []
         for i, z in enumerate(x):
-            evidence = [[self.scope[j], z[j-1]] for j in range(1, self.scope[1:].shape[0]+1)]
-            output.append(self.reduce(*evidence, inplace=False).marginalise(
-                *[e[0] for e in evidence]).argmax())
+            evidence = [
+                [self.scope[j], z[j - 1]] for j in range(1, self.scope[1:].shape[0] + 1)
+            ]
+            output.append(
+                self.reduce(*evidence, inplace=False)
+                .marginalise(*[e[0] for e in evidence])
+                .argmax()
+            )
         return np.asarray(output)
 
     def sum(self, *others, **kwargs):
@@ -143,17 +154,20 @@ class DiscreteFactor(Factor):
 
     def index(self, assignment):
         return assignment_to_index(
-            np.atleast_1d(np.asarray(assignment, dtype=np.int64)), self.cards)
+            np.atleast_1d(np.asarray(assignment, dtype=np.int64)), self.cards
+        )
 
     def vacuous(self, *args, c=1.0, **kwargs):
-        return type(self)(self.scope, self.cards, c * np.ones_like(self.parameters), **kwargs)
+        return type(self)(
+            self.scope, self.cards, c * np.ones_like(self.parameters), **kwargs
+        )
 
     def assignment(self, index):
         return index_to_assignment(index, self.cards)
 
     def _init_params(self, params, transform=None, fill=0.0):
         if params is None:
-            _params = ones_like_card(self.cards)*fill
+            _params = ones_like_card(self.cards) * fill
         else:
             _params = np.asarray(params, dtype=np.float32)
             m, n = len(_params), np.product(self.cards)
@@ -174,7 +188,9 @@ class DiscreteFactor(Factor):
     def _row_wise_scaling(self, epsilon=1e-16):
         # TODO: spin out
         values = self.parameters.copy()
-        parent_states = ap.cartesian_product(*np.array([np.arange(x) for x in self.cards[1:]]))
+        parent_states = ap.cartesian_product(
+            *np.array([np.arange(x) for x in self.cards[1:]])
+        )
         for parent_state in parent_states:
             idx = []
             row_sum = epsilon

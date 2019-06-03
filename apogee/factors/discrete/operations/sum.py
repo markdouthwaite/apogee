@@ -33,5 +33,5 @@ def factor_sum(a, b):
     return factor_arithmetic(
         (a.scope, a.card, a.params, a.assignments),
         (a.scope, a.card, a.params, a.assignments),
-        np.sum
+        np.sum,
     )

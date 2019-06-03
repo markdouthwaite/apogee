@@ -5,8 +5,8 @@ from .factor import DiscreteFactor
 class ClassifierFactor(DiscreteFactor):
     def __init__(self, scope, cards, estimator, **kwargs):
         self.estimator = estimator(**kwargs)
-        super().__init__(scope, cards )
-        
+        super().__init__(scope, cards)
+
     def fit(self, x, y=None):
         print(x[0].shape)
         self.estimator.fit(x, y)

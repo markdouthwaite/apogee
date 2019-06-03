@@ -22,7 +22,7 @@ class FactorSet(object):
 
         return [factor for factor in self if np.all(np.isin(var, factor.scope))]
 
-    def remove(self, *factors, inplace: bool=True) -> 'FactorSet':
+    def remove(self, *factors, inplace: bool = True) -> "FactorSet":
         """Remove one or more Factors from the current set."""
 
         factors = [factor for factor in self if factor not in factors]
@@ -56,12 +56,12 @@ class FactorSet(object):
 
         return cards
 
-    def blanket(self, *var) -> 'FactorSet':
+    def blanket(self, *var) -> "FactorSet":
         """Get the FactorSet associated with a given variable set."""
 
         return FactorSet(*self.get(*var))
 
-    def product(self) -> 'Factor':
+    def product(self) -> "Factor":
         """Compute the Joint Probability Distribution over the set."""
 
         factor = self.factors[0]
@@ -70,20 +70,22 @@ class FactorSet(object):
 
         return factor
 
-    def maximise(self, **kwargs) -> 'Factor':
+    def maximise(self, **kwargs) -> "Factor":
         """Maximise the Joint Probability Distribution over the set."""
 
         return self.product(**kwargs).maximise()
 
-    def reduce(self, *args, **kwargs) -> 'FactorSet':
+    def reduce(self, *args, **kwargs) -> "FactorSet":
         """Compute the reduced FactorSet (i.e. account for evidence)."""
 
         return FactorSet(*[x.reduce(*args, **kwargs) for x in self])
 
-    def normalise(self, inplace: bool=False, **kwargs) -> 'FactorSet':
+    def normalise(self, inplace: bool = False, **kwargs) -> "FactorSet":
         """Apply a normalisation transformation over the set."""
 
-        factors = [factor.normalise(inplace=inplace, **kwargs) for factor in self.factors]
+        factors = [
+            factor.normalise(inplace=inplace, **kwargs) for factor in self.factors
+        ]
         if inplace:
             return self
         else:
@@ -94,7 +96,7 @@ class FactorSet(object):
 
         return [getattr(factor, attrib)(*args, **kwargs) for factor in self]
 
-    def where(self, scope: list, exact: bool=True) -> 'FactorSet':
+    def where(self, scope: list, exact: bool = True) -> "FactorSet":
         """Compute the FactorSet where a scope exactly matches a provided value."""
 
         if exact:
@@ -102,30 +104,39 @@ class FactorSet(object):
         else:
             return FactorSet(*[x for x in self if np.all(np.isin(scope, x.scope))])
 
-    def new_factor(self, scope: list) -> 'Factor':
+    def new_factor(self, scope: list) -> "Factor":
         """Build a new factor from a provided scope."""
 
         if all(True if x in self.vars else False for x in scope):
             complete_subset = np.asarray(self.where(scope, exact=False).factors)
             if len(complete_subset) > 0:
-                factor = complete_subset[np.argmin([x.scope.shape[0] for x in complete_subset])]
+                factor = complete_subset[
+                    np.argmin([x.scope.shape[0] for x in complete_subset])
+                ]
                 return factor.subset(scope)
             else:
                 factors = []
                 for var in scope:
                     partial_subset = np.asarray(self.where([var], exact=False).factors)
-                    factors.append(partial_subset[np.argmin([x.scope.shape[0] for x in
-                                                             partial_subset])].copy())
+                    factors.append(
+                        partial_subset[
+                            np.argmin([x.scope.shape[0] for x in partial_subset])
+                        ].copy()
+                    )
 
-                factors = [factor.marginalise(*np.setdiff1d(factor.scope, scope)) for factor in
-                           factors]
+                factors = [
+                    factor.marginalise(*np.setdiff1d(factor.scope, scope))
+                    for factor in factors
+                ]
                 factors = FactorSet(*factors)
                 return factors.product().subset(scope)
 
         else:
             missing = ", ".join([str(x) for x in scope if x not in self.vars])
-            raise ValueError("Cannot create a new factor as the following variables are not in "
-                             "the set: {0}.".format(missing))
+            raise ValueError(
+                "Cannot create a new factor as the following variables are not in "
+                "the set: {0}.".format(missing)
+            )
 
     @property
     def adjacency_matrix(self) -> np.ndarray:
@@ -148,4 +159,6 @@ class FactorSet(object):
             yield factor
 
     def __repr__(self):
-        return "{0}({1})".format(type(self).__name__, ", ".join([str(factor) for factor in self]))
+        return "{0}({1})".format(
+            type(self).__name__, ", ".join([str(factor) for factor in self])
+        )

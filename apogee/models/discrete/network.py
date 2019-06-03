@@ -8,13 +8,9 @@ from apogee.io.parsers import load_hugin
 
 class BayesianNetwork(object):
 
-    _inference_engines = {
-        "exact-bp": JunctionTree
-    }
+    _inference_engines = {"exact-bp": JunctionTree}
 
-    _variable_types = {
-        "discrete": Variable
-    }
+    _variable_types = {"discrete": Variable}
 
     def __init__(self, engine="exact-bp"):
         """
@@ -37,15 +33,20 @@ class BayesianNetwork(object):
     def add(self, variable):
         self._variables[variable.name] = variable
 
-    def predict(self, x: dict=None):
+    def predict(self, x: dict = None):
         if isinstance(self._engine, type):
-            factors = FactorSet(*[var.factor.copy() for var in self._variables.values()])
+            factors = FactorSet(
+                *[var.factor.copy() for var in self._variables.values()]
+            )
             self._engine = self._engine.from_factors(factors)
         else:
             factors = FactorSet(*list(self._engine.factors))
 
         if x is not None:
-            obs = [[self.id(self._variables[k]), self.state_index(self._variables[k], v)] for k, v in x.items()]
+            obs = [
+                [self.id(self._variables[k]), self.state_index(self._variables[k], v)]
+                for k, v in x.items()
+            ]
             self._engine.update_observations(obs)
 
         self._engine.propagate()
@@ -83,7 +84,11 @@ class BayesianNetwork(object):
     def to_dict(self):
         data = {}
         for name, variable in self._variables.items():
-            data[name] = dict(states=variable.states, parents=variable.parents, parameters=variable.parameters)
+            data[name] = dict(
+                states=variable.states,
+                parents=variable.parents,
+                parameters=variable.parameters,
+            )
         return data
 
     def to_json(self, filename, **kwargs):
@@ -124,4 +129,3 @@ class BayesianNetwork(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.compile()
-

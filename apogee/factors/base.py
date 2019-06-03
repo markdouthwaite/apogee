@@ -144,7 +144,9 @@ class Factor(ABC):
         return self
 
     def __repr__(self):
-        return "{0}({1})".format(type(self).__name__, ",".join([str(x) for x in self.scope]))
+        return "{0}({1})".format(
+            type(self).__name__, ",".join([str(x) for x in self.scope])
+        )
 
     def __mul__(self, other):
         return self.product(other)
