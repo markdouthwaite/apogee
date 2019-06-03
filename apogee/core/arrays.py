@@ -48,7 +48,7 @@ def equals(a: ndarray, b: ndarray) -> bool:
 def contains(*args: ndarray) -> bool:
     """Check if an arbitrary set of arrays are a subset of each other."""
 
-    if len(intersect(*args)) > 0:
+    if len(intersect1d(*args)) > 0:
         return True
     else:
         return False
@@ -57,7 +57,7 @@ def contains(*args: ndarray) -> bool:
 def subset(a: ndarray, b: ndarray) -> bool:
     """Check if an array is a complete subset of another."""
 
-    if len(a) == len(intersect(a, b)):
+    if len(a) == len(intersect1d(a, b)):
         return True
     else:
         return False
