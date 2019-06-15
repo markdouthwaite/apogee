@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 
 def draw_network(network, **kwargs):
-    graph = network.graph()
+    graph = network.to_digraph()
     nx.spring_layout(graph, **kwargs)
     nx.draw(
         graph,

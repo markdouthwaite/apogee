@@ -1,8 +1,8 @@
 import numpy as np
+
 import apogee as ap
-from .operations import *
 from apogee.factors.base import Factor
-from .optimise import maximum_likelihood_update
+from .operations import *
 from .operations import (
     factor_product,
     factor_division,
@@ -11,6 +11,7 @@ from .operations import (
     factor_reduce,
     factor_sum,
 )
+from .optimise import maximum_likelihood_update
 
 
 class DiscreteFactor(Factor):

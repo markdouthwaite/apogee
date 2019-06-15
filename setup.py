@@ -43,7 +43,7 @@ def define_cython_extensions(
 
 
 # list your extensions here
-ext_modules = define_cython_extensions("apogee.core.fast.arrays")
+ext_modules = []  # define_cython_extensions("apogee.core.fast.arrays")
 
 
 setup(
@@ -53,7 +53,7 @@ setup(
     author="Mark Douthwaite",
     author_email="mark.douthwaite@peak.ai",
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
-    install_requires=["numpy", "tornado", "jupyter", "networkx", "matplotlib", "scipy"],
+    install_requires=["numpy", "tornado", "jupyter", "networkx", "matplotlib", "scipy", "networkx", "pyyaml"],
     include_package_data=True,
     include_dirs=[np.get_include()],
     ext_modules=ext_modules,

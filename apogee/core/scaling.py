@@ -8,7 +8,13 @@ def scale(*args, **kwargs):
     return normalise(*args, **kwargs)
 
 
-def normalise(x, a_min=-np.inf, a_max=np.inf, method="default", **kwargs):
+def normalise(
+    x: np.ndarray,
+    a_min: np.float32 = -np.inf,
+    a_max: np.float32 = np.inf,
+    method: str = "default",
+    **kwargs
+):
     """
     Normalise an array 'x'.
 
@@ -172,10 +178,7 @@ def std_norm(x, axis=None):
 
 
 def mean_norm(x, axis=None):
-    """
-    Apply mean normalisation to input array.
-
-    """
+    """Apply mean normalisation to input array."""
 
     _mean = np.mean(x, axis=axis, keepdims=True)
     _max = np.max(x, axis=axis)

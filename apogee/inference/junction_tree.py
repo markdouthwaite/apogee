@@ -1,9 +1,10 @@
-import numpy as np
 import networkx as nx
+import numpy as np
+
 from apogee import get_elimination_ordering, union1d, difference1d
 
 
-class JunctionTree(object):
+class JunctionTree:
     def __init__(self):
         self.graph = nx.Graph()
 

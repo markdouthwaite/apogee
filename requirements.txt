@@ -1,0 +1,7 @@
+numpy
+scipy
+pyyaml
+tornado
+jupyter
+networkx
+matplotlib

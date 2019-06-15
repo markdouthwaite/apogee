@@ -1,4 +1,4 @@
-"""Module containing core factor representation components."""
+"""Module containing core factor components."""
 
-from .set import FactorSet
 from .discrete import DiscreteFactor
+from .set import FactorSet

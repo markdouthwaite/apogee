@@ -1,6 +1,8 @@
-import numpy as np
-import apogee as ap
 from typing import Tuple, Callable
+
+import numpy as np
+
+import apogee as ap
 
 
 def factor_arithmetic(
@@ -8,7 +10,6 @@ def factor_arithmetic(
     b: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],
     op: Callable,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
-
     scope = ap.union1d(a[0], b[0])  # calculate the new scope.
     maps_a = ap.array_mapping(scope, a[0])  # generate map of scope of a in new scope.
     maps_b = ap.array_mapping(scope, b[0])  # repeat

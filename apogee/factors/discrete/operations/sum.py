@@ -1,5 +1,6 @@
-from .arithmetic import factor_arithmetic
 import numpy as np
+
+from .arithmetic import factor_arithmetic
 
 
 def factor_sum(a, b):

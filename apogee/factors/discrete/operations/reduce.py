@@ -1,9 +1,9 @@
 import numpy as np
+
 import apogee as ap
 
 
 def factor_reduce(factor, evidence, val=0.0):
-
     if np.any(np.isin(factor.scope, evidence[0])):
         assignments = factor.assignments
         parameters = np.ones(len(assignments)) * val

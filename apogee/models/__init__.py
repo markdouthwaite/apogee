@@ -1,1 +1,1 @@
-from .discrete import BayesianNetwork, Variable
+from apogee.models.bayes.discrete import BayesianNetwork, Variable

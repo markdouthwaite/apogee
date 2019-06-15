@@ -1,8 +1,9 @@
 import numpy as np
-from ...factors import DiscreteFactor
+
+from apogee.factors import DiscreteFactor
 
 
-class Variable(object):
+class Variable:
     def __init__(
         self, name: str, states: list, parameters: list = None, parents: list = None
     ):
