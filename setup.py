@@ -42,30 +42,18 @@ def define_cython_extensions(
     return modules
 
 
-# list extensions here
-ext_modules = define_cython_extensions(
-    "apogee.factors.discrete.operations.fast.arithmetic",
-    "apogee.factors.discrete.operations.fast.utils",
-)
+# list your extensions here
+ext_modules = []  # define_cython_extensions("apogee.core.fast.arrays")
 
 
 setup(
     name="apogee",
     version=__version__,
-    description="Probabilistic Graphical Models in Python",
+    description="Apogee",
     author="Mark Douthwaite",
-    author_email="mark@douthwaite.io",
-    url="http://github.com/markdouthwaite/apogee",
-    classifiers=[
-        "Development Status :: 3 - Alpha",
-        "License :: OSI Approved :: MIT License",
-        "Programming Language :: Python :: 3.6",
-        "Topic :: Software Development",
-        "Topic :: Scientific/Engineering",
-        "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    ],
+    author_email="mark.douthwaite@peak.ai",
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
-    install_requires=["numpy", "cython", "matplotlib", "networkx"],
+    install_requires=["numpy", "tornado", "jupyter", "networkx", "matplotlib", "scipy", "networkx", "pyyaml"],
     include_package_data=True,
     include_dirs=[np.get_include()],
     ext_modules=ext_modules,

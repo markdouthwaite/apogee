@@ -1,4 +1,5 @@
 import numpy as np
+
 from .factor import DiscreteFactor
 
 
@@ -8,7 +9,6 @@ class ClassifierFactor(DiscreteFactor):
         super().__init__(scope, cards)
 
     def fit(self, x, y=None):
-        print(x[0].shape)
         self.estimator.fit(x, y)
         return self
 

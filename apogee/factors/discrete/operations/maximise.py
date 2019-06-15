@@ -1,6 +1,7 @@
-from .utils import index_to_assignment, assignment_to_index
-import apogee as ap
 import numpy as np
+
+import apogee as ap
+from .utils import index_to_assignment, assignment_to_index
 
 
 def factor_maximise(a, v):
@@ -17,7 +18,6 @@ def factor_maximise(a, v):
     avals = a.params
 
     for i in range(len(a.params)):
-
         j = assignment_to_index(index_to_assignment(i, a.cards)[f_map], card)
 
         values[j] = np.max([values[j], avals[i]])

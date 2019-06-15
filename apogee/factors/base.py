@@ -1,6 +1,7 @@
-import numpy as np
-from copy import copy
 from abc import ABC, abstractmethod
+from copy import copy
+
+import numpy as np
 
 
 class Factor(ABC):

@@ -1,8 +1,7 @@
 numpy
-Cython
-pytest>=3.6
-pytest-cov
-networkx
 scipy
-coveralls
+pyyaml
+tornado
+jupyter
+networkx
 matplotlib

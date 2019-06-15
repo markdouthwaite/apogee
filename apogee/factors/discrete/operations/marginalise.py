@@ -1,5 +1,6 @@
-import apogee as ap
 import numpy as np
+
+import apogee as ap
 
 
 def factor_marginalise(a, v):

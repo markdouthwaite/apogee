@@ -1,3 +1,5 @@
+"""Core utilities for Apogee components."""
+
 from .arrays import (
     index_map_1d,
     index_map,
@@ -10,7 +12,6 @@ from .arrays import (
     array_mapping,
     array_index,
 )
-from .scaling import normalise
 from .entropy import (
     entropy,
     cross_entropy,
@@ -19,4 +20,5 @@ from .entropy import (
     kullback_leibler_divergence,
     relative_entropy,
 )
+from .scaling import normalise
 from .search import get_elimination_ordering, find_min_neighbours

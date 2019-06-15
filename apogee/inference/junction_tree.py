@@ -1,9 +1,10 @@
-import numpy as np
 import networkx as nx
+import numpy as np
+
 from apogee import get_elimination_ordering, union1d, difference1d
 
 
-class JunctionTree(object):
+class JunctionTree:
     def __init__(self):
         self.graph = nx.Graph()
 
@@ -135,7 +136,7 @@ class JunctionTree(object):
         tree = cls()
 
         factor_scopes = [x.scope.tolist() for x in factor_set]
-        for variable, reduced_scope in zip(
+        for variable, _ in zip(
             *get_elimination_ordering(factor_set.adjacency_matrix)
         ):
             current_factor_scope = union1d(
@@ -144,7 +145,6 @@ class JunctionTree(object):
             current_tau_scope = difference1d(current_factor_scope, [variable]).tolist()
 
             current_neighbour_scopes = [x for x in factor_scopes if variable in x]
-
             tree.add(
                 variable,
                 factor_set.new_factor(current_factor_scope),

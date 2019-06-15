@@ -1,1 +1,1 @@
-from .hugin import load_hugin, HuginParser
+from .hugin import read_hugin, HuginReader

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class bcolors:
+class Colors:
     HEADER = "\033[95m"
     OKBLUE = "\033[94m"
     OKGREEN = "\033[92m"
@@ -19,8 +19,8 @@ def pprint_marginals(network, marginals, n=4, percent=True):
             print(variable, "|", ", ".join(network[variable].parents))
         else:
             print(variable)
-        print("-" * 50)
 
+        print("-" * 50)
         probs = np.asarray(list(marginal.values()))
 
         if percent:
@@ -33,22 +33,22 @@ def pprint_marginals(network, marginals, n=4, percent=True):
             for i, (state, prob) in enumerate(marginal.items()):
                 if i == idx:
                     print(
-                        bcolors.BOLD
-                        + bcolors.OKGREEN
+                        Colors.BOLD
+                        + Colors.OKGREEN
                         + statement(state, prob)
-                        + bcolors.ENDC
+                        + Colors.ENDC
                     )
                 else:
-                    print(bcolors.FAIL + statement(state, prob) + bcolors.ENDC)
+                    print(Colors.FAIL + statement(state, prob) + Colors.ENDC)
 
         elif np.allclose(*probs):
             for i, (state, prob) in enumerate(marginal.items()):
-                print(bcolors.OKBLUE + statement(state, prob) + bcolors.ENDC)
+                print(Colors.OKBLUE + statement(state, prob) + Colors.ENDC)
         else:
             idx = np.argmax(probs)
             for i, (state, prob) in enumerate(marginal.items()):
                 if i == idx:
-                    print(bcolors.OKGREEN + statement(state, prob) + bcolors.ENDC)
+                    print(Colors.OKGREEN + statement(state, prob) + Colors.ENDC)
                 else:
-                    print(bcolors.OKBLUE + statement(state, prob) + bcolors.ENDC)
+                    print(Colors.OKBLUE + statement(state, prob) + Colors.ENDC)
     print("-" * 50)
