@@ -19,9 +19,8 @@ def pprint_marginals(network, marginals, n=4, percent=True):
             print(variable, "|", ", ".join(network[variable].parents))
         else:
             print(variable)
-            
-        print("-" * 50)
 
+        print("-" * 50)
         probs = np.asarray(list(marginal.values()))
 
         if percent:

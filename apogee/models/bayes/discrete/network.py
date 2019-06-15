@@ -37,6 +37,7 @@ class BayesianNetwork:
 
     def name(self, variable_id: int) -> str:
         """Given a variable index (id), return the corresponding variable object."""
+
         return list(self._variables.keys())[variable_id]
 
     def add(self, variable: Variable) -> None:
@@ -97,7 +98,8 @@ class BayesianNetwork:
         for variable in self._variables.values():
             variable.build_factor(self)
 
-    def state_index(self, variable: Variable, state: str) -> int:
+    @staticmethod
+    def state_index(variable: Variable, state: str) -> int:
         """Get the index of a given state for a variable."""
 
         # TODO: this is not generic - will not work for CLGs etc.
@@ -110,7 +112,7 @@ class BayesianNetwork:
         for variable in self._variables.values():
             graph.add_node(variable.name, name=variable.name)
 
-        for key, variable in self._variables.items():
+        for _, variable in self._variables.items():
             for parent in variable.parents:
                 graph.add_edge(parent, variable.name)
 
@@ -142,7 +144,7 @@ class BayesianNetwork:
     def from_yaml(cls, data, **kwargs):
         """Initialise a BayesianNetwork object from a YAML-structured string."""
 
-        data = yaml.load(io.StringIO(data), **kwargs)
+        data = yaml.safe_load(io.StringIO(data), **kwargs)
         return cls.from_dict(data)
 
     @classmethod
