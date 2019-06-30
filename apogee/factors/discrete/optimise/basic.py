@@ -7,9 +7,9 @@ import numpy as np
 def maximum_likelihood_update(
     x, states, n=0, alpha=0.0, parameters=None, dtype=np.float32
 ):
-    var_states = np.unique(states[:, 0], axis=0)
+
     scope_states = np.unique(states, axis=0)
-    neighbour_states = np.unique(states[:, 1:], axis=0)
+
     parameters = (
         np.asarray(parameters)
         if parameters is not None

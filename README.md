@@ -13,7 +13,7 @@ You'll need Python 3.6 or greater to use Apogee.
 
 ## Installation
 
-Apogee is now available on PyPI! Simply install it with:
+Apogee is now available on PyPI! Install it with:
 
 `pip install apogee`
 

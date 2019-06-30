@@ -1,1 +1,2 @@
-from apogee.models.bayes.discrete import BayesianNetwork, Variable
+from .base import GraphicalModel
+from apogee.models import variables

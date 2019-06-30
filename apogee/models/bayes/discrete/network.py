@@ -1,13 +1,12 @@
-import io
 import json
 
 import networkx as nx
-import yaml
 
 from apogee.io.parsers import read_hugin
-from .variable import Variable
 from apogee.factors import FactorSet
 from apogee.inference import JunctionTree
+
+from .discretevariable import DiscreteVariable
 
 
 class BayesianNetwork:
@@ -30,7 +29,7 @@ class BayesianNetwork:
         self._variables = {}
         self._algorithm = self._algorithms[atype]
 
-    def id(self, variable: Variable) -> int:
+    def id(self, variable: DiscreteVariable) -> int:
         """Given a variable, return the index of that variable in the available index list."""
 
         return list(self._variables.keys()).index(variable.name)
@@ -40,7 +39,7 @@ class BayesianNetwork:
 
         return list(self._variables.keys())[variable_id]
 
-    def add(self, variable: Variable) -> None:
+    def add(self, variable: DiscreteVariable) -> None:
         """Add a given variable to the network."""
 
         self._variables[variable.name] = variable
@@ -99,7 +98,7 @@ class BayesianNetwork:
             variable.build_factor(self)
 
     @staticmethod
-    def state_index(variable: Variable, state: str) -> int:
+    def state_index(variable: DiscreteVariable, state: str) -> int:
         """Get the index of a given state for a variable."""
 
         # TODO: this is not generic - will not work for CLGs etc.
@@ -135,25 +134,13 @@ class BayesianNetwork:
 
         return json.dumps(self.to_dict(), **kwargs)
 
-    def to_yaml(self, **kwargs):
-        """Translate the network structure into a YAML-structured format."""
-
-        return yaml.dump(self.to_dict(), **kwargs)
-
-    @classmethod
-    def from_yaml(cls, data, **kwargs):
-        """Initialise a BayesianNetwork object from a YAML-structured string."""
-
-        data = yaml.safe_load(io.StringIO(data), **kwargs)
-        return cls.from_dict(data)
-
     @classmethod
     def from_dict(cls, data: dict) -> "BayesianNetwork":
         """Initialise a BayesianNetwork object from a dictionary."""
 
         with cls(data.get("algorithm", "exact-bp")) as network:
             for variable, config in data.items():
-                network.add(Variable(name=variable, **config))
+                network.add(DiscreteVariable(name=variable, **config))
 
         return network
 

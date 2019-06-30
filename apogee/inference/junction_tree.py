@@ -136,9 +136,7 @@ class JunctionTree:
         tree = cls()
 
         factor_scopes = [x.scope.tolist() for x in factor_set]
-        for variable, _ in zip(
-            *get_elimination_ordering(factor_set.adjacency_matrix)
-        ):
+        for variable, _ in zip(*get_elimination_ordering(factor_set.adjacency_matrix)):
             current_factor_scope = union1d(
                 *[scope for scope in factor_scopes if variable in scope]
             )

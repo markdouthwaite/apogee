@@ -33,7 +33,9 @@ def _node_scope(idx: int, matrix: np.ndarray) -> np.ndarray:
     return np.where(matrix[:, idx] > 0)[0]
 
 
-def get_elimination_ordering(matrix: np.ndarray, heuristic: callable = find_min_neighbours):
+def get_elimination_ordering(
+    matrix: np.ndarray, heuristic: callable = find_min_neighbours
+):
     """Compute the elimination ordering of a given graph in matrix-from."""
 
     count = 0
@@ -46,8 +48,6 @@ def get_elimination_ordering(matrix: np.ndarray, heuristic: callable = find_min_
         ordering.append(j)
         count += 1
 
-    ordering.append(
-        [x for x in range(matrix.shape[0]) if x not in ordering][0]
-    )
+    ordering.append([x for x in range(matrix.shape[0]) if x not in ordering][0])
 
     return ordering, scopes

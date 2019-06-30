@@ -25,7 +25,7 @@ class HuginReader:
     def __init__(self):
         self._data = OrderedDict()
 
-    def write(self, model: "BayesianNetwork", *args, **kwargs):
+    def write(self, model: "GraphicalModel", *args, **kwargs):
         """Write a model as a HUGIN-formatted file."""
 
         raise NotImplementedError("Writing HUGIN models is not yet supported.")
@@ -34,9 +34,10 @@ class HuginReader:
         """Read a HUGIN-formatted file as an Apogee BayesianNetwork."""
 
         with open(filename, "r") as file:
-            data = deformat(file.read().strip())
+            return self.parse(file.read())
 
-        nodes, potentials = self._extract(data)
+    def parse(self, data: str):
+        nodes, potentials = self._extract(deformat(data.strip()))
 
         self.parse_nodes(nodes)
         self.parse_potentials(potentials)
@@ -99,7 +100,7 @@ class HuginReader:
                 data = np.array(data).reshape((m, n)).flatten("F")
 
             self._data[key]["parameters"] = data
-            self._data[key]["parents"] = parents
+            self._data[key]["neighbours"] = parents
             if "position" not in self._data[key].keys():
                 self._data[key]["position"] = [0, 0, 0]
 
@@ -124,7 +125,7 @@ class HuginReader:
                 z=0,
             )
 
-            for parent in value["parents"]:  # this is important
+            for parent in value["neighbours"]:  # this is important
                 edge = dict(start=parent, end=key, weight=1.0, d="true")
                 edges.append(edge)
             nodes[key] = local
