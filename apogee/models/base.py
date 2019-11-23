@@ -23,12 +23,14 @@ class GraphicalModel:
             if key == name:
                 return i
 
-    def name(self, index: int):
+    def name(self, index: int) -> str:
         for i, key in enumerate(self.variables.keys()):
             if i == index:
                 return key
 
-    def fit(self, frame: "DataFrame"):
+        raise IndexError("Index not found")
+
+    def fit(self, frame: "DataFrame") -> None:
         for name, variable in self.variables.items():
             variable.fit(frame[variable.scope].values)
 
@@ -54,12 +56,6 @@ class GraphicalModel:
             for i, p in enumerate(marginal.normalise().parameters):
                 response.update(**{variable.states[i]: p})
             yield {name: response}
-
-    def to_dict(self):
-        data = {}
-
-        for key, value in self.variables.items():
-            print(key, value)
 
     @memoize
     def predict(self, *args, **kwargs):

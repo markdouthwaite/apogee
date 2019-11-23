@@ -1,0 +1,97 @@
+apiVersion: '1'
+
+graph:
+
+  metadata:
+    name: asia
+
+  nodes:
+    - name: xray
+      type: cpt
+      distribution:
+        states:
+          - yes
+          - no
+        dependencies:
+          - either
+        parameters:
+          - [0.98, 0.02]
+          - [0.05, 0.95]
+
+    - name: dysp
+      type: cpt
+      distribution:
+        states:
+          - yes
+          - no
+        dependencies:
+          - bronc
+          - either
+        parameters:
+          - [0.90, 0.10]
+          - [0.80, 0.20]
+          - [0.70, 0.30]
+          - [0.10, 0.90]
+
+    - name: tub
+      type: cpt
+      distribution:
+        states:
+          - yes
+          - no
+        dependencies:
+          - asia
+        parameters:
+          - [0.05, 0.95]
+          - [0.01, 0.99]
+
+    - name: either
+      distribution:
+        states:
+          - yes
+          - no
+        dependencies:
+          - lung
+          - tub
+        parameters:
+          - [1.00, 0.00]
+          - [1.00, 0.00]
+          - [1.00, 0.00]
+          - [0.00, 1.00]
+
+    - name: asia
+      distribution:
+        states:
+          - yes
+          - no
+        parameters:
+          - [0.01, 0.99]
+
+    - name: smoke
+      distribution:
+        states:
+          - yes
+          - no
+        parameters:
+          - [0.50, 0.50]
+
+    - name: lung
+      distribution:
+        states:
+          - yes
+          - no
+        dependencies:
+          - smoke
+        parameters:
+          - [0.10, 0.90]
+
+    - name: bronc
+      distribution:
+        states:
+          - yes
+          - no
+        dependencies:
+          - smoke
+        parameters:
+          - [0.60, 0.40]
+          - [0.30, 0.70]
