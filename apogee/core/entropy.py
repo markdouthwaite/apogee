@@ -4,7 +4,7 @@ import numpy as np
 
 
 def entropy(p: np.ndarray, **kwargs):
-    """Comput the entropy of a vector."""
+    """Compute the entropy of a vector."""
 
     p = np.clip(p, 1e-16, 1.0 - 1e-16)
     return -np.sum(p * (np.log(p)), **kwargs)

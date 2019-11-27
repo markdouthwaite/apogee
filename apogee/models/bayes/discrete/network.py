@@ -2,7 +2,7 @@ import json
 
 import networkx as nx
 
-from apogee.io.parsers import read_hugin
+from apogee.io import read_hugin
 from apogee.factors import FactorSet
 from apogee.inference import JunctionTree
 
@@ -16,7 +16,6 @@ class BayesianNetwork:
 
     def __init__(self, atype: str = "exact-bp"):
         """
-
 
         Parameters
         ----------

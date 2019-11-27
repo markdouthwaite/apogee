@@ -43,7 +43,7 @@ def define_cython_extensions(
 
 
 # list your extensions here
-ext_modules = []  # define_cython_extensions("apogee.core.fast.arrays")
+ext_modules = define_cython_extensions("apogee.factors.discrete.operations.fast.arithmetic")
 
 
 setup(
@@ -55,10 +55,8 @@ setup(
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
     install_requires=[
         "numpy",
-        "tornado",
         "jupyter",
         "networkx",
-        "matplotlib",
         "scipy",
         "networkx",
         "pyyaml",

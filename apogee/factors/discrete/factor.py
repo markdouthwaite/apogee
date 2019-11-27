@@ -1,5 +1,6 @@
+from typing import Optional, Any, Union, List, Type
 import numpy as np
-
+from numpy import ndarray
 import apogee as ap
 from apogee.factors.base import Factor
 from .operations import *
@@ -17,13 +18,13 @@ from .optimise import maximum_likelihood_update
 class DiscreteFactor(Factor):
     def __init__(
         self,
-        scope: np.ndarray,
-        cardinality: np.ndarray,
-        parameters: np.ndarray = None,
+        scope: ndarray,
+        cardinality: ndarray,
+        parameters: ndarray = None,
         alpha: float = 0.0,
         samples: int = 0,
-        **kwargs
-    ):
+        **kwargs: Optional[Any],
+    ) -> None:
         """
         A class representing a discrete stochastic factor.
 
@@ -58,20 +59,23 @@ class DiscreteFactor(Factor):
         self._cardinality = self._init_cards(cardinality)
         self._parameters = self._init_params(parameters, **kwargs)
 
-    def fit(self, x: np.ndarray, y: np.ndarray = None):
+    def fit(self, x: ndarray, y: Optional[Union[ndarray, None]] = None) -> Factor:
         return self.fit_partial(x, y)
 
-    def fit_partial(self, x: np.ndarray, y: np.ndarray = None):
+    def fit_partial(self, x: ndarray, y: Optional[Union[ndarray, None]] = None) -> Factor:
+
         if y is not None:
             x = np.c_[y, x]
 
         self._parameters = maximum_likelihood_update(
             x, self.assignments, parameters=self.p, alpha=self._alpha, n=self._samples
         )
+
         self._samples += x.shape[0]
+
         return self
 
-    def predict(self, x: np.ndarray):
+    def predict(self, x: ndarray) -> ndarray:
         output = []
         for i, z in enumerate(x):
             evidence = [
@@ -84,16 +88,21 @@ class DiscreteFactor(Factor):
             )
         return np.asarray(output)
 
-    def sum(self, *others, **kwargs):
+    def sum(self, *others: Factor, **kwargs: Optional[Any]) -> Factor:
         return self._operation(others, factor_sum, **kwargs)
 
-    def product(self, *others, **kwargs):
+    def product(self, *others: Factor, **kwargs: Optional[Any]) -> Factor:
         return self._operation(others, factor_product, **kwargs)
 
-    def division(self, *others, **kwargs):
+    def division(self, *others: Factor, **kwargs: Optional[Any]) -> Factor:
         return self._operation(others, factor_division, **kwargs)
 
-    def normalise(self, inplace=False, row_wise=True, **kwargs):
+    def normalise(
+        self,
+        inplace: Optional[bool] = False,
+        row_wise: Optional[bool] = True,
+        **kwargs: Optional[Any],
+    ) -> Factor:
         if row_wise:
             values = self._row_wise_scaling(**kwargs)
         else:
@@ -105,34 +114,34 @@ class DiscreteFactor(Factor):
         else:
             return DiscreteFactor(self.scope, self.cards, values)
 
-    def maximise(self, *others, **kwargs):
+    def maximise(self, *others: Factor, **kwargs: Optional[Any]) -> Factor:
         return self._operation(others, factor_maximise, **kwargs)
 
-    def marginalise(self, *others, **kwargs):
+    def marginalise(self, *others: Factor, **kwargs: Optional[Any]) -> Factor:
         return self._operation(others, factor_marginalise, **kwargs)
 
-    def reduce(self, *evidence, **kwargs):
+    def reduce(self, *evidence: Factor, **kwargs: Optional[Any]) -> Factor:
         return self._operation(evidence, factor_reduce, **kwargs)
 
-    def mpe(self, mode="max", **kwargs):
+    def mpe(self, mode: str = "max", **kwargs: Optional[Any]) -> ndarray:
         if mode == "min":
             return self.assignments[self.argmin(**kwargs)]
         else:
             return self.assignments[self.argmax(**kwargs)]
 
-    def max(self, **kwargs):
+    def max(self, **kwargs: Optional[Any]):
         return np.max(self.parameters, **kwargs)
 
-    def min(self, **kwargs):
+    def min(self, **kwargs: Optional[Any]) -> float:
         return np.min(self.parameters, **kwargs)
 
-    def argmax(self, **kwargs):
+    def argmax(self, **kwargs: Optional[Any]) -> ndarray:
         return np.argmax(self.parameters, **kwargs)
 
-    def argmin(self, **kwargs):
+    def argmin(self, **kwargs: Optional[Any]) -> ndarray:
         return np.argmin(self.parameters, **kwargs)
 
-    def log(self, inplace: bool = True, clip: float = 1e-6):
+    def log(self, inplace: Optional[bool] = True, clip: Optional[float] = 1e-6) -> Factor:
         parameters = np.log(np.clip(self._parameters.copy(), clip))
         if inplace:
             self._parameters = parameters
@@ -140,26 +149,29 @@ class DiscreteFactor(Factor):
         else:
             return DiscreteFactor(self.scope, self.cards, parameters)
 
-    def exp(self, inplace: bool = True):
+    def exp(self, inplace: Optional[bool] = True) -> Factor:
+
         parameters = np.exp(self._parameters.copy())
+
         if inplace:
             self._parameters = parameters
             return self
+
         else:
             return DiscreteFactor(self.scope, self.cards, parameters)
 
-    def card(self, variable: int):
+    def card(self, variable: int) -> ndarray:
         return self.cards[ap.array_mapping(self.scope, [variable])]
 
-    def subset(self, scope: np.ndarray):
+    def subset(self, scope: ndarray) -> Factor:
         cards = [self.card(x)[0] for x in scope]
         return DiscreteFactor(scope, cards).identity
 
     @property
-    def entropy(self):
+    def entropy(self) -> Union[float, ndarray]:
         return ap.entropy(self._parameters)
 
-    def index(self, assignment):
+    def index(self, assignment: Union[int, ndarray, List[int]]) -> ndarray:
         return assignment_to_index(
             np.atleast_1d(np.asarray(assignment, dtype=np.int64)), self.cards
         )
@@ -173,7 +185,7 @@ class DiscreteFactor(Factor):
         return index_to_assignment(index, self.cards)
 
     def _init_params(
-        self, params: np.ndarray or None, callback: callable = None, fill: float = 0.0
+        self, params: ndarray or None, callback: callable = None, fill: float = 0.0
     ):
         if params is None:
             _params = ones_like_card(self.cards) * fill
@@ -185,7 +197,7 @@ class DiscreteFactor(Factor):
         return _params if callback is None else callback(_params)
 
     @staticmethod
-    def _init_cards(cards: np.ndarray or list):
+    def _init_cards(cards: ndarray or list):
         """Initialise and validate an array of cardinalities."""
 
         _cards = np.asarray(cards, dtype=np.int32)
@@ -261,7 +273,7 @@ class DiscreteFactor(Factor):
         return self._cardinality
 
     @cards.setter
-    def cards(self, values: np.ndarray):
+    def cards(self, values: ndarray):
         self._cardinality = self._init_cards(values)
 
     @property

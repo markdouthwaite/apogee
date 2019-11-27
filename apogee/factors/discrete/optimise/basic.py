@@ -1,12 +1,24 @@
 import functools
 import itertools
 
+from typing import Optional, Type, Union, List
+
 import numpy as np
 
 
 def maximum_likelihood_update(
-    x, states, n=0, alpha=0.0, parameters=None, dtype=np.float32
-):
+    x: np.ndarray,
+    states: np.ndarray,
+    n: Optional[int] = 0,
+    alpha: Optional[float] = 0.0,
+    parameters: Optional[Union[np.ndarray, List]] = None,
+    dtype: Optional[Type] = np.float32,
+) -> np.ndarray:
+    """
+    Compute the simple MLE update parameters for a dataset.
+
+    # Todo - This can be accelerated.
+    """
 
     scope_states = np.unique(states, axis=0)
 
@@ -15,7 +27,9 @@ def maximum_likelihood_update(
         if parameters is not None
         else np.zeros(scope_states.shape[0], dtype=dtype)
     )
+
     parameters *= n
+
     counts = (
         _compute_rowwise_counts(
             x, np.arange(scope_states.shape[1]), scope_states

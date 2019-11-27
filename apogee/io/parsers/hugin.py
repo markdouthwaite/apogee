@@ -5,13 +5,6 @@ from collections import OrderedDict
 import numpy as np
 
 
-def read_hugin(filename):
-    """Read a HUGIN-formatted file."""
-
-    p = HuginReader().read(filename)
-    return p
-
-
 def deformat(s):
     s = str(s)
     s = re.sub(r"\n", " ", s)
