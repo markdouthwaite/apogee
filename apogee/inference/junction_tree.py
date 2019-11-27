@@ -143,6 +143,7 @@ class JunctionTree:
             current_tau_scope = difference1d(current_factor_scope, [variable]).tolist()
 
             current_neighbour_scopes = [x for x in factor_scopes if variable in x]
+
             tree.add(
                 variable,
                 factor_set.new_factor(current_factor_scope),

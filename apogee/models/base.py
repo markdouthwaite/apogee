@@ -28,7 +28,7 @@ class GraphicalModel:
             if i == index:
                 return key
 
-        raise IndexError("Index not found")
+        raise IndexError("Index not found.")
 
     def fit(self, frame: "DataFrame") -> None:
         for name, variable in self.variables.items():

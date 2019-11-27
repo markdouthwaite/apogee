@@ -24,6 +24,7 @@ class Factor(ABC):
         """
 
         self.scope = np.asarray(scope).astype(np.int32)
+
         assert len(np.unique(self.scope)) == len(self.scope)
 
     def copy(self):
