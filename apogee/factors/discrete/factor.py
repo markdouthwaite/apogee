@@ -20,9 +20,9 @@ class DiscreteFactor(Factor):
         self,
         scope: ndarray,
         cardinality: ndarray,
-        parameters: ndarray = None,
-        alpha: float = 0.0,
-        samples: int = 0,
+        parameters: Optional[ndarray] = None,
+        alpha: Optional[float] = 0.0,
+        samples: Optional[int] = 0,
         **kwargs: Optional[Any],
     ) -> None:
         """
@@ -176,12 +176,12 @@ class DiscreteFactor(Factor):
             np.atleast_1d(np.asarray(assignment, dtype=np.int64)), self.cards
         )
 
-    def vacuous(self, *args, c: float = 1.0, **kwargs):
+    def vacuous(self, *args, c: Optional[float] = 1.0, **kwargs: Optional[Any]):
         return type(self)(
             self.scope, self.cards, c * np.ones_like(self.parameters), **kwargs
         )
 
-    def assignment(self, index):
+    def assignment(self, index: ndarray) -> ndarray:
         return index_to_assignment(index, self.cards)
 
     def _init_params(
