@@ -62,7 +62,9 @@ class DiscreteFactor(Factor):
     def fit(self, x: ndarray, y: Optional[Union[ndarray, None]] = None) -> Factor:
         return self.fit_partial(x, y)
 
-    def fit_partial(self, x: ndarray, y: Optional[Union[ndarray, None]] = None) -> Factor:
+    def fit_partial(
+        self, x: ndarray, y: Optional[Union[ndarray, None]] = None
+    ) -> Factor:
 
         if y is not None:
             x = np.c_[y, x]
@@ -141,7 +143,9 @@ class DiscreteFactor(Factor):
     def argmin(self, **kwargs: Optional[Any]) -> ndarray:
         return np.argmin(self.parameters, **kwargs)
 
-    def log(self, inplace: Optional[bool] = True, clip: Optional[float] = 1e-6) -> Factor:
+    def log(
+        self, inplace: Optional[bool] = True, clip: Optional[float] = 1e-6
+    ) -> Factor:
         parameters = np.log(np.clip(self._parameters.copy(), clip))
         if inplace:
             self._parameters = parameters

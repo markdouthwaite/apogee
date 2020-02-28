@@ -2,20 +2,38 @@ import json
 
 import networkx as nx
 
-from apogee.io import read_hugin
 from apogee.factors import FactorSet
 from apogee.inference import JunctionTree
+from apogee.io.parsers.hugin import HuginReader
 
 from .discretevariable import DiscreteVariable
 
 
+def read_hugin(*args, **kwargs) -> "BayesianNetwork":
+    """Read a HUGIN file and return a BN."""
+    reader = HuginReader()
+    data = reader.read(*args, **kwargs)
+    return BayesianNetwork.from_dict(data)
+
+
 class BayesianNetwork:
-    """A utility class for building Bayesian Networks from Factors and FactorSets."""
+    """
+    A wrapper for building and querying Bayesian Networks!
+
+    References
+    ----------
+    [1] D. Koller, N. Freidman: Probabilistic Graphical Models, Principles and
+        Techniques
+    [2] F. Jensen: Bayesian Networks
+
+    """
 
     _algorithms: dict = {"exact-bp": JunctionTree}
+    # re-implement MCMC, variational and 'fast' exact-bp.
 
     def __init__(self, atype: str = "exact-bp"):
         """
+        Initialise the network!
 
         Parameters
         ----------
@@ -29,7 +47,9 @@ class BayesianNetwork:
         self._algorithm = self._algorithms[atype]
 
     def id(self, variable: DiscreteVariable) -> int:
-        """Given a variable, return the index of that variable in the available index list."""
+        """
+        Given a variable, return the index of that variable in the available index list.
+        """
 
         return list(self._variables.keys()).index(variable.name)
 
@@ -43,20 +63,25 @@ class BayesianNetwork:
 
         self._variables[variable.name] = variable
 
-    def predict(self, x: dict = None) -> dict:
+    def predict(self, x: dict = None, y: set = None) -> dict:
         """
-        Generate predictions (posterior marginal distributions) for each variable in the network.
+        Generate predictions (posterior marginal distributions) for each variable in
+        the network.
 
         Parameters
         ----------
         x: dict, optional
-            A dictionary containing 'evidence' of the state of the network. This should be key: value pairs, where
-            keys correspond to the names of variables, and the values are the states or observed value of that variable.
-
+            A dictionary containing 'evidence' of the state of the network. This should
+            be key: value pairs, where keys correspond to the names of variables, and
+            the values are the states or observed value of that variable.
+        y: set, optional
+            An optional set containing only the names of variables for which you
+            wish to retrieve the marginals.
         Returns
         -------
         out: dict
-            A dictionary, mapping names to marginal distributions. For a discrete variable, this would look like:
+            A dictionary, mapping names to marginal distributions. For a discrete
+            variable, this would look like:
             {"var0": {"true": 0.5, "false": 0.5}}
 
         """
@@ -78,7 +103,13 @@ class BayesianNetwork:
         self._algorithm.calibrate()
 
         marginals = {}
-        for marginal in self._algorithm.marginals(*factors.vars):
+
+        if y is not None:
+            v = [v for v in factors.vars if self.name(v) in y]
+        else:
+            v = factors.vars
+
+        for marginal in self._algorithm.marginals(*v):
             name = self.name(marginal.scope[0])
             variable = self._variables[name]
             current_marginals = {}
@@ -91,7 +122,9 @@ class BayesianNetwork:
         return marginals
 
     def compile(self) -> None:
-        """Compile the model. This will generate corresponding factors for each variable."""
+        """
+        Compile the model. This will generate corresponding factors for each variable.
+        """
 
         for variable in self._variables.values():
             variable.build_factor(self)
@@ -151,12 +184,10 @@ class BayesianNetwork:
         return cls.from_dict(data)
 
     @classmethod
-    def from_hugin(cls, filename: str, algorithm: str = "exact-bp", **kwargs: any):
-        """Initialise a BayesianNetwork object from a JSON-structured string."""
+    def from_hugin(cls, data: str):
+        """Initialise a BayesianNetwork object from a HUGIN-structured string."""
 
-        data = read_hugin(filename, **kwargs)
-        data["algorithm"] = algorithm
-        return cls.from_dict(data)
+        return cls.from_dict(HuginReader().parse(data))
 
     def __len__(self):
         return len(self._variables)
@@ -176,3 +207,6 @@ class BayesianNetwork:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.compile()
+
+    def __repr__(self):
+        return "{0}(n={1})".format(type(self).__name__, len(self))

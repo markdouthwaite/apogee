@@ -14,12 +14,14 @@ class Factor(ABC):
         Parameters
         ----------
         scope: array_like
-            An array of integer values corresponding to the variables in the scope of this Factor.
+            An array of integer values corresponding to the variables in the scope of
+            this Factor.
 
         References
         ----------
-        D. Koller, N. Freidman: Probabilistic Graphical Models, Principles and Techniques
-        F. Jensen: Bayesian Networks
+        [1] D. Koller, N. Freidman: Probabilistic Graphical Models, Principles and
+            Techniques
+        [2] F. Jensen: Bayesian Networks
 
         """
 

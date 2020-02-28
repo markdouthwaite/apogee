@@ -37,14 +37,5 @@ class DiscreteVariable:
 
         self.factor = DiscreteFactor(scope, cards, params)
 
-    # @classmethod
-    # def from_frame(cls, frame: "DataFrame", name: str, parents: list = None):
-    #     parents = parents or []
-    #     fields = [name, *parents]
-    #
-    #     encoders = {}
-    #
-    #     for field in fields:
-    #         encoders[field] = LabelBinarizer().fit(frame[field])
-    #
-    #     encoders[]
+    def __repr__(self):
+        return "{0}({1})".format(type(self).__name__, self.name)
