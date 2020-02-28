@@ -93,7 +93,7 @@ class HuginReader:
                 data = np.array(data).reshape((m, n)).flatten("F")
 
             self._data[key]["parameters"] = data
-            self._data[key]["parents"] = parents
+            self._data[key]["neighbours"] = parents
             if "position" not in self._data[key].keys():
                 self._data[key]["position"] = [0, 0, 0]
 

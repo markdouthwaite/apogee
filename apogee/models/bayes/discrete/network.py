@@ -63,6 +63,10 @@ class BayesianNetwork:
 
         self._variables[variable.name] = variable
 
+    def fit(self, frame: "DataFrame") -> None:
+        for name, variable in self._variables.items():
+            variable.fit(frame[variable.scope].values)
+
     def predict(self, x: dict = None, y: set = None) -> dict:
         """
         Generate predictions (posterior marginal distributions) for each variable in

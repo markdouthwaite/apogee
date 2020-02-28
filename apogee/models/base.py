@@ -1,9 +1,11 @@
 from typing import List, Generator
 from collections import OrderedDict
 
+from functools import lru_cache
+
 from apogee.inference import JunctionTree
 from apogee.factors import FactorSet
-from apogee.utils.memo import memoize
+from apogee.utils.typing import castarg
 
 
 class GraphicalModel:
@@ -34,7 +36,7 @@ class GraphicalModel:
         for name, variable in self.variables.items():
             variable.fit(frame[variable.scope].values)
 
-    def iterpredict(self, x: dict = None) -> Generator:
+    def iterpredict(self, x: dict = None, y: tuple = None) -> Generator:
         factors = FactorSet(*self.factors)
 
         engine = JunctionTree.from_factors(factors)
@@ -49,7 +51,12 @@ class GraphicalModel:
         engine.propagate()
         engine.calibrate()
 
-        for marginal in engine.marginals(*factors.vars):
+        if y is not None:
+            v = [v for v in factors.vars if self.name(v) in y]
+        else:
+            v = factors.vars
+
+        for marginal in engine.marginals(*v):
             response = {}
             name = self.name(marginal.scope[0])
             variable = self.variables[name]
@@ -57,7 +64,8 @@ class GraphicalModel:
                 response.update(**{variable.states[i]: p})
             yield {name: response}
 
-    @memoize
+    @castarg(name="y", argtype=tuple)
+    @lru_cache(256)
     def predict(self, *args, **kwargs):
         return list(self.iterpredict(*args, **kwargs))
 
