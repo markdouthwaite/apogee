@@ -4,6 +4,9 @@ import pkg_resources
 from .base import GraphicalModel
 from apogee.models import variables, bayes
 
+BayesianNetwork = GraphicalModel
+
+
 SPEC_BASE = pkg_resources.resource_filename("apogee", "models/specs")
 
 
@@ -23,3 +26,10 @@ def load_model(name):
 
     else:
         raise ValueError("Unknown model name '{name}'.".format(name=name))
+
+
+__all__ = [
+    "load_model",
+    "BayesianNetwork",
+    "GraphicalModel"
+]
