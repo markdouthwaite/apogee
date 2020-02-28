@@ -18,6 +18,8 @@ def read_hugin(*args, **kwargs) -> "BayesianNetwork":
 
 class BayesianNetwork:
     """
+    (DEPRECATED)
+    
     A wrapper for building and querying Bayesian Networks!
 
     References
