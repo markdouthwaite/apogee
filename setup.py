@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from Cython.Build import cythonize
+from Cython.Build import cythonize, build_ext
 from setuptools import Extension, setup, find_packages
 from apogee import __version__
 
@@ -60,8 +60,10 @@ setup(
         "scipy",
         "networkx",
         "pyyaml",
+        "Cython"
     ],
     include_package_data=True,
     include_dirs=[np.get_include()],
     ext_modules=ext_modules,
+    build_ext=build_ext,
 )

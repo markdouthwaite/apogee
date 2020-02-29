@@ -26,6 +26,7 @@ class GraphicalModel:
                 return i
 
     def name(self, index: int) -> str:
+        # this is slow.
         for i, key in enumerate(self.variables.keys()):
             if i == index:
                 return key

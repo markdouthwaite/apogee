@@ -28,8 +28,4 @@ def load_model(name):
         raise ValueError("Unknown model name '{name}'.".format(name=name))
 
 
-__all__ = [
-    "load_model",
-    "BayesianNetwork",
-    "GraphicalModel"
-]
+__all__ = ["load_model", "BayesianNetwork", "GraphicalModel"]

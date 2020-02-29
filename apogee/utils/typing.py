@@ -1,5 +1,3 @@
-
-
 def castarg(pos=None, name=None, argtype=None):
     def _wrapper(func):
         def _inner(*args, **kwargs):
@@ -12,5 +10,7 @@ def castarg(pos=None, name=None, argtype=None):
             if name is not None and name in kwargs:
                 kwargs[name] = argtype(kwargs[name])
             return func(*args, **kwargs)
+
         return _inner
+
     return _wrapper
