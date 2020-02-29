@@ -1,7 +1,7 @@
 import networkx as nx
 import numpy as np
 
-from apogee import get_elimination_ordering, union1d, difference1d
+from apogee.core import get_elimination_ordering, union1d, difference1d
 
 
 class JunctionTree:

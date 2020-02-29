@@ -2,7 +2,7 @@ from typing import Tuple, Callable
 
 import numpy as np
 
-import apogee as ap
+import apogee.core as ap
 
 try:
     from .fast import factor_arithmetic

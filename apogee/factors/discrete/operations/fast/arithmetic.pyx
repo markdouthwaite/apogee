@@ -2,7 +2,7 @@ from typing import Tuple, Callable
 
 import numpy as np
 
-import apogee as ap
+import apogee.core as ap
 
 
 def factor_arithmetic(a: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],

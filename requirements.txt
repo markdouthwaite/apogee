@@ -3,3 +3,4 @@ networkx
 pytest
 Cython
 tornado
+scikit-learn

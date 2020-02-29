@@ -1,7 +1,7 @@
 from typing import Optional, Any, Union, List, Type
 import numpy as np
 from numpy import ndarray
-import apogee as ap
+import apogee.core as ap
 from apogee.factors.base import Factor
 from .operations import *
 from .operations import (
