@@ -24,20 +24,32 @@ THE SOFTWARE.
 
 import json
 
+from typing import Optional, Any
+
 from tornado.web import RequestHandler
 
 
 class QueryHandler(RequestHandler):
-    def initialize(self, model, **kwargs) -> None:
+    """
+    A handler for managing requests to a Probabilistic Graphical Model.
+    """
+
+    def initialize(self, model: "GraphicalModel", **kwargs: Optional[Any]) -> None:
+        """Setup the handler."""
+
         self._model = model
         super().initialize(**kwargs)
 
     @staticmethod
-    def _format_response(dist):
+    def _format_response(dist: dict) -> str:
+        """
+        Process the response to strip any nasty numpy data types before serialising.
+        """
+
         dist = {k: {s: float(p) for s, p in v.items()} for k, v in dist.items()}
         return json.dumps(dist)
 
-    def post(self, *args, **kwargs) -> None:
+    def post(self, *args: Optional[Any], **kwargs: Optional[Any]) -> None:
         """
         Execute a query against the provided model.
 

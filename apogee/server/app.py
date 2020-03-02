@@ -22,6 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
+from typing import Optional, Any
+
 from tornado.web import Application
 from tornado.ioloop import IOLoop
 
@@ -30,8 +32,16 @@ from .handlers import QueryHandler, HealthHandler
 
 class ApogeeServer(Application):
     def __init__(
-        self, model, *args, port=8080, address="127.0.0.1", ioloop=None, **kwargs
+        self,
+        model: "GraphicalModel",
+        *args: Optional[Any],
+        port: int = 8080,
+        address: str = "127.0.0.1",
+        ioloop: IOLoop = None,
+        **kwargs: Optional[Any]
     ):
+        """A wrapper for exposing an Apogee Server."""
+
         self._port = port
         self._address = address
         self._ioloop = ioloop
@@ -44,6 +54,8 @@ class ApogeeServer(Application):
         super().__init__(handlers, *args, **kwargs)
 
     def run(self) -> None:
+        """Start the server's eventloop."""
+
         self.listen(address=self._address, port=self._port)
         if self._ioloop is None:
             IOLoop.current().start()

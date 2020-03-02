@@ -32,7 +32,9 @@ from apogee.utils import strings
 
 
 class HuginParser:
-    """Read from a HUGIN file."""
+    """
+    A HUGIN parser. For parsing HUGINs.
+    """
 
     def __init__(self):
         self._data = OrderedDict()
