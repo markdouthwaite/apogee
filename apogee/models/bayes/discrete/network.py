@@ -1,17 +1,19 @@
 import json
 
 import networkx as nx
+from pandas import DataFrame
 
 from apogee.factors import FactorSet
 from apogee.inference import JunctionTree
-from apogee.io.parsers.hugin import HuginReader
+from apogee.io.parsers.hugin import HuginParser
 
 from .discretevariable import DiscreteVariable
 
 
 def read_hugin(*args, **kwargs) -> "BayesianNetwork":
     """Read a HUGIN file and return a BN."""
-    reader = HuginReader()
+
+    reader = HuginParser()
     data = reader.read(*args, **kwargs)
     return BayesianNetwork.from_dict(data)
 
@@ -65,9 +67,9 @@ class BayesianNetwork:
 
         self._variables[variable.name] = variable
 
-    def fit(self, frame: "DataFrame") -> None:
+    def fit(self, df: DataFrame) -> None:
         for name, variable in self._variables.items():
-            variable.fit(frame[variable.scope].values)
+            variable.fit(df[variable.scope].values)
 
     def predict(self, x: dict = None, y: set = None) -> dict:
         """
@@ -193,7 +195,7 @@ class BayesianNetwork:
     def from_hugin(cls, data: str):
         """Initialise a BayesianNetwork object from a HUGIN-structured string."""
 
-        return cls.from_dict(HuginReader().parse(data))
+        return cls.from_dict(HuginParser().parse(data))
 
     def __len__(self):
         return len(self._variables)

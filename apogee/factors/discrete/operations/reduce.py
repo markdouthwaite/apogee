@@ -1,6 +1,6 @@
 import numpy as np
 
-import apogee as ap
+import apogee.core as ap
 
 
 def factor_reduce(factor, evidence, val=0.0):

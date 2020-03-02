@@ -9,6 +9,10 @@ from apogee.utils.typing import castarg
 
 
 class GraphicalModel:
+    """
+    This class implements an API for building probabilistic graphical models.
+    """
+
     def __init__(self):
         self.variables = OrderedDict()
 

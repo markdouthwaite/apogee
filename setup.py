@@ -65,7 +65,10 @@ def os_path(import_path: str, ext: str) -> str:
 
 
 # list your extensions here
-cython_helper = CythonHelper("apogee.factors.discrete.operations.fast.arithmetic")
+cython_helper = CythonHelper(
+    "apogee.factors.discrete.operations.fast.arithmetic",
+    "apogee.core.fast.arrays",
+)
 
 
 setup(
@@ -85,6 +88,7 @@ setup(
         "pyyaml",
         "Cython",
         "scikit-learn",
+        "pandas",
     ],
     include_package_data=True,
     cmdclass={"build_ext": build_numpy_ext},

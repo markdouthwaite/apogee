@@ -1,3 +1,4 @@
+import warnings
 from typing import Tuple, Callable
 
 import numpy as np
@@ -7,7 +8,9 @@ import apogee.core as ap
 try:
     from .fast import factor_arithmetic
 
-except ImportError:
+except ImportError as e:
+    print(e)
+    warnings.warn("Failed to load accelerated arithmetic operations. Using defaults.")
 
     def factor_arithmetic(
         a: Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray],

@@ -128,3 +128,5 @@ dmypy.json
 .idea
 sandbox.py
 playground.py
+
+*.c
