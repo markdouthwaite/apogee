@@ -45,7 +45,7 @@ class GraphicalModel:
     def iter_predict(
         self, x: tuple = None, y: tuple = None
     ) -> Generator[dict, None, None]:
-        
+
         factors = FactorSet(*self.factors)
 
         engine = JunctionTree.from_factors(factors)

@@ -63,9 +63,10 @@ class QueryHandler(RequestHandler):
         if len(data) > 0:
             payload = json.loads(data)
             evidence = payload.get("evidence")
-            marginals = payload.get("marginals", {})
-            dist = self._model.predict(evidence)
-            dist = {k: v for k, v in dist.items() if k in marginals}
+            marginals = payload.get("marginals", [])
+            evidence = [(k, v) for k, v in evidence.items()]
+            dist = self._model.predict(x=evidence, y=marginals)
+            # dist = {k: v for k, v in dist.items() if k in marginals}
         else:
             dist = self._model.predict()
 
