@@ -11,6 +11,4 @@ RUN pip install -r requirements.txt
 RUN python setup.py build_ext --inplace
 RUN python setup.py install
 
-RUN useradd apogee
-
 CMD ["pytest", "tests"]
