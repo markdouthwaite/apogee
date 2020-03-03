@@ -1,4 +1,5 @@
 # Basic API
+
 ```
 from apogee import BayesianNetwork, DiscreteVariable as Variable
 

@@ -26,7 +26,8 @@ import os
 import pkg_resources
 
 from .base import GraphicalModel
-from apogee.models import variables, bayes
+from apogee.io import read_json
+from apogee.models import variables
 
 BayesianNetwork = GraphicalModel
 
@@ -46,7 +47,7 @@ def load_model(name):
 
         if type == "bayes":
             with open(path) as model_file:
-                return bayes.BayesianNetwork.from_json(model_file.read())
+                return read_json(model_file.read())
         else:
             raise ValueError("Unknown model type '{type}'.".format(type=type))
 

@@ -1,4 +1,4 @@
-from typing import List, Generator
+from typing import List, Generator, Optional, Any
 from collections import OrderedDict
 
 from functools import lru_cache
@@ -41,14 +41,14 @@ class GraphicalModel:
         for name, variable in self.variables.items():
             variable.fit(frame[variable.scope].values)
 
-    def iterpredict(self, x: dict = None, y: tuple = None) -> Generator:
+    def iterpredict(self, x: tuple = None, y: tuple = None) -> Generator:
         factors = FactorSet(*self.factors)
 
         engine = JunctionTree.from_factors(factors)
 
         if x is not None:
             evidence = []
-            for key, value in x.items():
+            for key, value in x:
                 evidence.append([self.index(key), self[key].states.index(value)])
 
             engine.update_observations(evidence)
@@ -69,9 +69,10 @@ class GraphicalModel:
                 response.update(**{variable.states[i]: p})
             yield {name: response}
 
+    @castarg(name="x", argtype=tuple)
     @castarg(name="y", argtype=tuple)
     @lru_cache(256)
-    def predict(self, *args, **kwargs):
+    def predict(self, *args: Optional[Any], **kwargs: Optional[Any]):
         return list(self.iterpredict(*args, **kwargs))
 
     @property

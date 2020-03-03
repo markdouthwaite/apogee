@@ -46,7 +46,7 @@ def read_json(data: str, **kwargs: Optional[Any]) -> GraphicalModel:
     return read_dict(json.loads(data, **kwargs))
 
 
-def read_dict(data: dict) -> GraphicalModel:
+def read_dict(data: dict, directed: bool = True) -> GraphicalModel:
     """Read a dictionary-structured PGM and return full model object."""
 
     model = GraphicalModel()
@@ -56,6 +56,11 @@ def read_dict(data: dict) -> GraphicalModel:
             del value["type"]
         else:
             flavour = DiscreteVariable
+
+        if directed and "parents" in value:
+            value["neighbours"] = value["parents"]
+            del value["parents"]
+
         model.add(flavour(key, **value))
 
     return model

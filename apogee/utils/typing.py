@@ -22,7 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from typing import Optional, Any, Callable
+from typing import Optional, Any, Callable, TypeVar
+
+
+FactorLike = TypeVar("FactorLike")
+FactorSetLike = TypeVar("FactorSetLike")
+VariableLike = TypeVar("VariableLike")
 
 
 def castarg(
@@ -39,9 +44,13 @@ def castarg(
                     "castarg decorator expects either name or pos, not both."
                 )
             if pos is not None:
-                args = tuple(x if i != pos else argtype(x) for i, x in enumerate(args))
+                args = tuple(
+                    x if i != pos and x is not None else argtype(x)
+                    for i, x in enumerate(args)
+                )
             if name is not None and name in kwargs:
-                kwargs[name] = argtype(kwargs[name])
+                if kwargs[name] is not None:
+                    kwargs[name] = argtype(kwargs[name])
             return func(*args, **kwargs)
 
         return _inner

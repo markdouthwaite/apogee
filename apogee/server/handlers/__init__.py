@@ -25,7 +25,4 @@ THE SOFTWARE.
 from .health import HealthHandler
 from .query import QueryHandler
 
-__all__ = [
-    "HealthHandler",
-    "QueryHandler"
-]
+__all__ = ["HealthHandler", "QueryHandler"]

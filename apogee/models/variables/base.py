@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
-from typing import List, Union
+from typing import List, Optional
 
 
 class BaseVariable(ABC):
     def __init__(
         self,
         name: str,
-        neighbours: Union[List[str], None] = None,
+        neighbours: Optional[List[str]] = None,
         graph: "GraphicalModel" = None,
     ):
         self.name = name

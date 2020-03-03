@@ -22,16 +22,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from typing import TypeVar, Tuple, List
+from typing import Tuple, List, Generator
 
 import networkx as nx
 import numpy as np
 
 from apogee.core import get_elimination_ordering, union1d, difference1d
-
-
-FactorLike = TypeVar("FactorLike")
-FactorSetLike = TypeVar("FactorSetLike")
+from apogee.utils.typing import FactorLike, FactorSetLike
 
 
 class JunctionTree:
@@ -50,6 +47,8 @@ class JunctionTree:
     [1]
     [2] https://en.wikipedia.org/wiki/Junction_tree_algorithm
 
+    # Todo: optimisation pass.
+
     """
 
     def __init__(self):
@@ -58,6 +57,8 @@ class JunctionTree:
     def add(
         self, variable: int, factor: FactorLike, tau: List[int], neighbours: List[int]
     ) -> None:
+        """Add a variable to the tree."""
+
         self.graph.add_node(variable, factor=factor, tau=tau)
         for node, attrs in self.graph.nodes.items():
             if node != variable and attrs["tau"] in neighbours:
@@ -65,6 +66,8 @@ class JunctionTree:
                 self.graph.add_edge(variable, node, messages=messages)
 
     def initialise(self, factors: List[FactorLike]) -> "JunctionTree":
+        """Initialise the tree given a set of factors."""
+
         factors = [factor.copy() for factor in factors]
         used = []
         for i, attrs in self.graph.nodes.items():
@@ -79,6 +82,8 @@ class JunctionTree:
         return self
 
     def calibrate(self) -> None:
+        """Calibrate the nodes on the tree."""
+
         for node, attrs in self.graph.nodes.items():
             factor = attrs["factor"]
 
@@ -89,6 +94,8 @@ class JunctionTree:
             attrs.update(factor=factor)
 
     def propagate(self) -> None:
+        """Propagate belief across the tree."""
+
         while self._message_count() < (2.0 * len(self.graph.edges)):
             for (source, target) in self.graph.edges.keys():
                 if self._can_send(source, target):
@@ -128,15 +135,23 @@ class JunctionTree:
             self.graph.nodes[node]["factor"] = self.graph.nodes[node]["cached"].copy()
 
     def marginal(self, variable: int) -> FactorLike:
+        """Compute the marginal distribution for the given variable."""
+
         for factor in self.factors:
             if variable in factor.scope:
                 return factor.marginalise(*np.setdiff1d(factor.scope, [variable]))
 
+        raise ValueError("Variable '{0}' was not found in the provided tree.".format(variable))
+
     def marginals(self, *variables: Tuple[int]) -> FactorLike:
+        """Compute the marginal distribution for a collection of variables."""
+
         for variable in variables:
             yield self.marginal(variable)
 
     def _can_send(self, source: int, target: int) -> bool:
+        """Determine if messages can be sent from source node to target node."""
+
         if self._message(source, target) is None:
             neighbours = list(nx.neighbors(self.graph, source))
             n_neighbours = len(neighbours)
@@ -153,13 +168,19 @@ class JunctionTree:
 
         return False
 
-    def _message(self, source: int, target: int) -> bool:
+    def _message(self, source: int, target: int) -> FactorLike:
+        """Get the message sent between the source and target node."""
+
         return self.graph.edges[(source, target)]["messages"][(source, target)]
 
     def _has_received(self, source: int, target: int) -> bool:
+        """Check if a message was sent between the source and target node."""
+
         return True if self._message(source, target) is not None else False
 
     def _send_message(self, source: int, target: int) -> None:
+        """Send a message between the source and target node."""
+
         source_factor = self.graph.nodes[source]["factor"].copy()
         target_factor = self.graph.nodes[target]["factor"].copy()
 
@@ -180,6 +201,8 @@ class JunctionTree:
         self.graph.edges[(source, target)]["messages"][(source, target)] = source_factor
 
     def _message_count(self) -> int:
+        """Calculate the total number of messages sent."""
+
         messages = 0
         for k, v in nx.get_edge_attributes(self.graph, "messages").items():
             for _, z in v.items():
@@ -188,12 +211,16 @@ class JunctionTree:
         return messages
 
     @property
-    def factors(self) -> FactorLike:
+    def factors(self) -> Generator[FactorLike, None, None]:
+        """Yield factors in the tree."""
+
         for node in self.graph.nodes.values():
             yield node["factor"]
 
     @classmethod
     def from_factors(cls, factor_set: FactorSetLike) -> "JunctionTree":
+        """Create a JT from a provided FactorSet object."""
+
         tree = cls()
 
         factor_scopes = [x.scope.tolist() for x in factor_set]
