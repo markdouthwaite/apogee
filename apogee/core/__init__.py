@@ -64,5 +64,5 @@ __all__ = [
     "array_mapping",
     "ndarange",
     "union1d",
-    "difference1d"
+    "difference1d",
 ]

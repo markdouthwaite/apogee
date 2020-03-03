@@ -5,7 +5,7 @@ from functools import lru_cache
 
 from apogee.inference import JunctionTree
 from apogee.factors import FactorSet
-from apogee.utils.typing import castarg
+from apogee.utils.typing import castarg, VariableLike
 
 
 class GraphicalModel:
@@ -14,9 +14,9 @@ class GraphicalModel:
     """
 
     def __init__(self):
-        self.variables = OrderedDict()
+        self.variables: OrderedDict = OrderedDict()
 
-    def add(self, variable) -> "GraphicalModel":
+    def add(self, variable: VariableLike) -> "GraphicalModel":
         self.variables[variable.name] = variable(graph=self)
         return self
 
@@ -25,6 +25,7 @@ class GraphicalModel:
         return self
 
     def index(self, name: str) -> int:
+        # this is slow.
         for i, key in enumerate(self.variables.keys()):
             if key == name:
                 return i
@@ -41,7 +42,10 @@ class GraphicalModel:
         for name, variable in self.variables.items():
             variable.fit(frame[variable.scope].values)
 
-    def iterpredict(self, x: tuple = None, y: tuple = None) -> Generator:
+    def iter_predict(
+        self, x: tuple = None, y: tuple = None
+    ) -> Generator[dict, None, None]:
+        
         factors = FactorSet(*self.factors)
 
         engine = JunctionTree.from_factors(factors)
@@ -73,7 +77,7 @@ class GraphicalModel:
     @castarg(name="y", argtype=tuple)
     @lru_cache(256)
     def predict(self, *args: Optional[Any], **kwargs: Optional[Any]):
-        return list(self.iterpredict(*args, **kwargs))
+        return list(self.iter_predict(*args, **kwargs))
 
     @property
     def factors(self) -> List:
@@ -82,9 +86,9 @@ class GraphicalModel:
     def __getitem__(self, item: str) -> "BaseVariable":
         return self.variables[item]
 
-    def __setitem__(self, key: str, value: "BaseVariable"):
+    def __setitem__(self, key: str, value: "BaseVariable") -> None:
         if value.name == key:
             self.add(value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "{0}({1})".format(type(self).__name__, ",".join(self.variables.keys()))

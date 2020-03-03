@@ -141,7 +141,9 @@ class JunctionTree:
             if variable in factor.scope:
                 return factor.marginalise(*np.setdiff1d(factor.scope, [variable]))
 
-        raise ValueError("Variable '{0}' was not found in the provided tree.".format(variable))
+        raise ValueError(
+            "Variable '{0}' was not found in the provided tree.".format(variable)
+        )
 
     def marginals(self, *variables: Tuple[int]) -> FactorLike:
         """Compute the marginal distribution for a collection of variables."""
