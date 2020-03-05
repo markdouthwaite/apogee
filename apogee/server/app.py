@@ -38,17 +38,23 @@ class ApogeeServer(Application):
         port: int = 8080,
         address: str = "127.0.0.1",
         ioloop: IOLoop = None,
-        **kwargs: Optional[Any]
+        subpath: Optional[str] = None,
+        **kwargs: Optional[Any],
     ):
         """A wrapper for exposing an Apogee Server."""
 
         self._port = port
         self._address = address
         self._ioloop = ioloop
+        self._subpath = subpath
 
         handlers = [
-            (r"/health", HealthHandler),
-            (r"/query", QueryHandler, dict(model=model)),
+            (f"/{subpath}/health" if subpath else r"/health", HealthHandler),
+            (
+                f"/{subpath}/query" if subpath else r"/query",
+                QueryHandler,
+                dict(model=model),
+            ),
         ]
 
         super().__init__(handlers, *args, **kwargs)
