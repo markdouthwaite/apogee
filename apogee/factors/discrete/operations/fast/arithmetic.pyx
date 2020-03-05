@@ -7,33 +7,15 @@ import apogee.core.fast as ap
 
 from apogee.core.arrays import array_index
 
-# def array_index(a, b):
-#     """Find the index of the first occurrence of elements in 'a' in array 'b'."""
-#
-#     return np.where(np.all(a==b,axis=1))[0]
 
-
-# def array_index(a, b):
-#     """Find the index of the first occurence of elements in 'a' in array 'b'."""
-#
-#     a = np.asarray(a).tolist()
-#     b = np.asarray(b).tolist()
-#
-#     output = []
-#     for x in a:
-#         output.append(b.index(x))
-#
-#     print(np.where(np.all(a==b,axis=1))[0])
-#     print(np.asarray(output, dtype=np.int32))
-#
-#     return np.asarray(output, dtype=np.int32)
-
-
+@cython.boundscheck(False)
+@cython.wraparound(False)
 cpdef factor_arithmetic(a, b, op):
     """
-
+    Perform some factor arithmetic.
     """
 
+    # This isn't doing all that much to speed things up at this time.
     cdef scope = ap.union1d(a[0], b[0])  # calculate the new scope.
     cdef maps_a = ap.array_mapping(scope, a[0])  # gen. map of scope of a in new scope.
     cdef maps_b = ap.array_mapping(scope, b[0])  # repeat
