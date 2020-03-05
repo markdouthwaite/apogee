@@ -215,7 +215,7 @@ class DiscreteFactor(Factor):
         return index_to_assignment(index, self.cards)
 
     def _init_params(
-        self, params: ndarray or None, callback: callable = None, fill: float = 0.0
+        self, params: Optional[ndarray], callback: Optional[callable] = None, fill: float = 0.0
     ):
         if params is None:
             _params = ones_like_card(self.cards) * fill
@@ -227,7 +227,7 @@ class DiscreteFactor(Factor):
         return _params if callback is None else callback(_params)
 
     @staticmethod
-    def _init_cards(cards: ndarray or list):
+    def _init_cards(cards: ndarray):
         """Initialise and validate an array of cardinalities."""
 
         _cards = np.asarray(cards, dtype=np.int32)

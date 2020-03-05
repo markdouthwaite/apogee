@@ -132,10 +132,13 @@ class GraphicalModel:
     @castarg(name="x", argtype=tuple)
     @castarg(name="marginals", argtype=tuple)
     @lru_cache(256)
-    def predict(self, *args: Optional[Any], **kwargs: Optional[Any]) -> List[dict]:
+    def predict(self, *args: Optional[Any], **kwargs: Optional[Any]) -> dict:
         """Generate predictions."""
 
-        return list(self.iter_predict(*args, **kwargs))
+        data = {}
+        for e in self.iter_predict(*args, **kwargs):
+            data.update(**e)
+        return data
 
     @property
     def factors(self) -> List[FactorLike]:

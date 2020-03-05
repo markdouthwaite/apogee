@@ -45,7 +45,6 @@ class QueryHandler(RequestHandler):
         """
         Process the response to strip any nasty numpy data types before serialising.
         """
-
         dist = {k: {s: float(p) for s, p in v.items()} for k, v in dist.items()}
         return json.dumps(dist)
 
@@ -62,10 +61,10 @@ class QueryHandler(RequestHandler):
         data = self.request.body.decode("utf-8")
         if len(data) > 0:
             payload = json.loads(data)
-            evidence = payload.get("evidence")
-            marginals = payload.get("marginals", [])
+            evidence = payload.get("evidence", {})
+            marginals = payload.get("marginals", None)
             evidence = [(k, v) for k, v in evidence.items()]
-            dist = self._model.predict(x=evidence, y=marginals)
+            dist = self._model.predict(x=evidence, marginals=marginals)
             # dist = {k: v for k, v in dist.items() if k in marginals}
         else:
             dist = self._model.predict()
