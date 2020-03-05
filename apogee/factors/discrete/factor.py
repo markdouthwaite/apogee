@@ -55,24 +55,26 @@ class DiscreteFactor(Factor):
         Parameters
         ----------
         scope: array_like, integer
-            An array of integers corresponding to the variables in the scope of the current factor.
-            Note that the ordering of this array is important -- make sure the scope mapping is
+            An array of integers corresponding to the variables in the scope of the
+            current factor. Note that the ordering of this array is important -- make
+            sure the scope mapping is
             correct!
         cardinality: array_like, integer
-            An array of integers corresponding to the cardinality (number of states) of each of the
-            variable in the scope of the factor. Once again, note that the order of this array should
-            align exactly with the 'scope' array.
+            An array of integers corresponding to the cardinality (number of states) of
+            each of the variable in the scope of the factor. Once again, note that the
+            order of this array should align exactly with the 'scope' array.
         parameters: array_like, float
-            An array of floating point numbers representing the distribution of the factor. The
-            factor expects to receive these parameters in log-space. Set the transform keyword to
-            apply a transform to the parameters.
+            An array of floating point numbers representing the distribution of the
+            factor. The factor expects to receive these parameters in log-space. Set
+            the transform keyword to apply a transform to the parameters.
         alpha: float
-            A prior, currently a fixed value, to be applied when fitting the factor to a dataset.
-            Intuitively, this acts as
+            A prior, currently a fixed value, to be applied when fitting the factor to
+            a dataset.
 
         References
         ----------
-        D. Koller, N. Freidman: Probabilistic Graphical Models, Principles and Techniques
+        D. Koller, N. Freidman: Probabilistic Graphical Models, Principles and
+            Techniques
         F. Jensen: Bayesian Networks
 
         """
