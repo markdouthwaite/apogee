@@ -28,6 +28,7 @@ from tornado.web import Application
 from tornado.ioloop import IOLoop
 
 from .handlers import QueryHandler, HealthHandler
+from .handlers.variables import VariablesListHandler, VariableMetaHandler
 
 
 class ApogeeServer(Application):
@@ -53,6 +54,16 @@ class ApogeeServer(Application):
             (
                 f"/{subpath}/query" if subpath else r"/query",
                 QueryHandler,
+                dict(model=model),
+            ),
+            (
+                f"/{subpath}/vars/list" if subpath else r"/vars/list",
+                VariablesListHandler,
+                dict(model=model),
+            ),
+            (
+                f"/{subpath}/vars/meta" if subpath else r"/vars/meta",
+                VariableMetaHandler,
                 dict(model=model),
             ),
         ]
