@@ -22,8 +22,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-from .list_ import VariablesListHandler
-from .meta import VariableMetaHandler
+from .list_handler import VariablesListHandler
+from .meta_handler import VariableMetaHandler
 
 __all__ = [
     "VariableMetaHandler",

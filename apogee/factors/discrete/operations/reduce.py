@@ -1,3 +1,9 @@
+"""
+The MIT License
+
+Copyright (c) 2017-2020 Mark Douthwaite
+"""
+
 import numpy as np
 
 import apogee.core as ap

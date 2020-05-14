@@ -5,6 +5,20 @@ from setuptools.command.build_ext import build_ext as _build_ext
 from apogee import __version__
 
 
+PROJECT_URLS = {
+    'Bug Tracker': 'https://github.com/markdouthwaite/apogee/issues',
+    'Source Code': 'https://github.com/markdouthwaite/apogee'
+}
+
+DOWNLOAD_URL = 'https://pypi.org/project/apogee/#files'
+
+DESCRIPTION = 'A set of tools for quickly building and ' \
+              'deploying Probabilistic Graphical Models.'
+
+with open('README.md') as f:
+    LONG_DESCRIPTION = f.read()
+
+
 class build_numpy_ext(_build_ext):
     def finalize_options(self):
         _build_ext.finalize_options(self)
@@ -73,7 +87,11 @@ cython_helper = CythonHelper(
 setup(
     name="apogee",
     version=__version__,
-    description="Apogee",
+    description=DESCRIPTION,
+    long_description=LONG_DESCRIPTION,
+    long_description_content_type="text/markdown",
+    download_url=DOWNLOAD_URL,
+    licence="MIT",
     author="Mark Douthwaite",
     author_email="mark.douthwaite@peak.ai",
     packages=find_packages(exclude=["contrib", "docs", "tests*"]),
@@ -89,6 +107,23 @@ setup(
         "scikit-learn",
         "pandas",
     ],
+    classifiers=['Intended Audience :: Science/Research',
+                 'Intended Audience :: Developers',
+                 'License :: OSI Approved',
+                 'Programming Language :: Cython',
+                 'Programming Language :: Python',
+                 'Topic :: Software Development',
+                 'Topic :: Scientific/Engineering',
+                 'Operating System :: Unix',
+                 'Operating System :: MacOS',
+                 'Programming Language :: Python :: 3',
+                 'Programming Language :: Python :: 3.6',
+                 'Programming Language :: Python :: 3.7',
+                 ('Programming Language :: Python :: '
+                  'Implementation :: CPython'),
+                 ('Programming Language :: Python :: '
+                  'Implementation :: PyPy')
+                 ],
     include_package_data=True,
     cmdclass={"build_ext": build_numpy_ext},
     ext_modules=cython_helper.extensions,

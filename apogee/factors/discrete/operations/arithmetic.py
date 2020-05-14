@@ -1,3 +1,9 @@
+"""
+The MIT License
+
+Copyright (c) 2017-2020 Mark Douthwaite
+"""
+
 import warnings
 from typing import Tuple, Callable
 
@@ -9,7 +15,6 @@ try:
     from .fast import factor_arithmetic
 
 except ImportError as e:
-    print(e)
     warnings.warn("Failed to load accelerated arithmetic operations. Using defaults.")
 
     def factor_arithmetic(

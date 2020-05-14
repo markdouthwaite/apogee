@@ -1,4 +1,8 @@
-"""Auxiliary array operations."""
+"""
+The MIT License
+
+Copyright (c) 2017-2020 Mark Douthwaite
+"""
 
 import itertools
 from functools import reduce
