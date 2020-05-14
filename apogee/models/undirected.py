@@ -1,37 +1,60 @@
-from typing import List, Generator, Optional, Any
+"""
+The MIT License
+
+Copyright (c) 2017-2020 Mark Douthwaite
+"""
+
+import json
+from typing import List, Generator, Optional, Any, Text
 from collections import OrderedDict
 
 from functools import lru_cache
 
 from pandas import DataFrame
+from networkx import Graph
 
+from apogee import io
 from apogee.inference import JunctionTree
 from apogee.factors import FactorSet
+from apogee.models.variables import DiscreteVariable
+
 from apogee.utils.typing import castarg, VariableLike, FactorLike
 
 
-class GraphicalModel:
+class UndirectedModel:
     """
-    This class implements an API for building probabilistic graphical models.
+    An interface for building undirected graphical models.
     """
 
+    _var_types = {
+        "discrete": DiscreteVariable
+    }
+
     def __init__(self):
+        """Create a new GraphicalModel instance."""
+        self._graph = Graph()
         self.variables: OrderedDict = OrderedDict()
 
     def add(self, variable: VariableLike) -> "GraphicalModel":
         """Add a variable to the model."""
 
-        self.variables[variable.name] = variable(graph=self)
+        self._graph.add_node(variable.name, variable=variable)
+        self.variables[variable.name] = variable
+        for other in variable.neighbours:
+            self._graph.add_edge(other, variable.name)
+
         return self
 
     def remove(self, name: str) -> "GraphicalModel":
         """Remove a variable from the model."""
 
         del self.variables[name]
+
         return self
 
     def index(self, name: str) -> int:
         """Get the index of the variable with the given name."""
+
         # this is slow.
         for i, key in enumerate(self.variables.keys()):
             if key == name:
@@ -41,6 +64,7 @@ class GraphicalModel:
 
     def name(self, index: int) -> str:
         """Get the name of the variable at the given index."""
+
         # this is slow.
         for i, key in enumerate(self.variables.keys()):
             if i == index:
@@ -66,7 +90,7 @@ class GraphicalModel:
 
         Notes
         -----
-        * At this point, structure learning is not included in this method.
+        * Structure learning is not currently supported.
 
         """
 
@@ -123,10 +147,13 @@ class GraphicalModel:
 
         for marginal in engine.marginals(*v):
             response = {}
+
             name = self.name(marginal.scope[0])
             variable = self.variables[name]
+
             for i, p in enumerate(marginal.normalise().parameters):
                 response.update(**{variable.states[i]: p})
+
             yield {name: response}
 
     @castarg(name="x", argtype=tuple)
@@ -138,6 +165,7 @@ class GraphicalModel:
         data = {}
         for e in self.iter_predict(*args, **kwargs):
             data.update(**e)
+
         return data
 
     @property
@@ -146,13 +174,40 @@ class GraphicalModel:
 
         return [x.factor for x in self.variables.values()]
 
-    def __getitem__(self, item: str) -> "BaseVariable":
+    @classmethod
+    def from_dict(cls, data: dict):
+
+        model = cls()
+
+        for key, value in data.items():
+            if "type" in value:
+                flavour = cls._var_types[value["type"]]
+                del value["type"]
+            else:
+                flavour = DiscreteVariable
+
+            model.add(flavour(key, graph=model, **value))
+
+        return model
+
+    @classmethod
+    def from_hugin(cls, filename: Text) -> "GraphicalModel":
+        data: dict = io.hugin.load(open(filename))
+        return cls.from_dict(data)
+
+    @classmethod
+    def from_json(cls, filename: Text) -> "GraphicalModel":
+        data: dict = json.load(open(filename))
+        return cls.from_dict(data)
+
+    def __getitem__(self, item: str) -> VariableLike:
         """Return variable with label 'item'."""
 
         return self.variables[item]
 
-    def __setitem__(self, key: str, value: "BaseVariable") -> None:
+    def __setitem__(self, key: str, value: VariableLike) -> None:
         """Update variable with label 'item' to 'value'."""
+
         if value.name == key:
             self.add(value)
 

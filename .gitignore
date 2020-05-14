@@ -130,3 +130,5 @@ sandbox.py
 playground.py
 
 *.c
+
+/misc

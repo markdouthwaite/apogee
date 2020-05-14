@@ -47,7 +47,7 @@ class JunctionTree:
     [1]
     [2] https://en.wikipedia.org/wiki/Junction_tree_algorithm
 
-    # Todo: optimisation pass.
+    # Todo: Complete an optimisation pass over this. Lots to tighten up.
 
     """
 
@@ -104,7 +104,7 @@ class JunctionTree:
                 elif self._can_send(target, source):
                     self._send_message(target, source)
 
-    def update_observations(self, observations: List[List[int]]):
+    def update_observations(self, observations: List[List[int]]) -> None:
         """
         Update the observation state of the tree.
 
@@ -113,10 +113,6 @@ class JunctionTree:
         observations: list
             A list of observations of the form [[var: int, obs: int], ..., [...]].
             Where 'obs' is the observed evidence for the state of variable 'var'.
-
-        Returns
-        -------
-        None
 
         """
 
@@ -210,6 +206,7 @@ class JunctionTree:
             for _, z in v.items():
                 if z is not None:
                     messages += 1
+
         return messages
 
     @property

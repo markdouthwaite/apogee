@@ -66,8 +66,7 @@ def os_path(import_path: str, ext: str) -> str:
 
 # list your extensions here
 cython_helper = CythonHelper(
-    "apogee.factors.discrete.operations.fast.arithmetic",
-    "apogee.core.fast.arrays",
+    "apogee.factors.discrete.operations.fast.arithmetic", "apogee.core.fast.arrays",
 )
 
 

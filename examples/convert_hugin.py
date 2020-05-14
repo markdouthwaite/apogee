@@ -1,7 +1,7 @@
 import json
 from apogee.io import parsers
 
-hugin = parsers.HuginParser()
+hugin = parsers.HuginReader()
 
 data = hugin.read("data/asia.net")
 

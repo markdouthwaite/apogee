@@ -1,3 +1,9 @@
+"""
+The MIT License
+
+Copyright (c) 2017-2020 Mark Douthwaite
+"""
+
 from typing import List, Union
 
 from numpy import ndarray, asarray, float32, zeros, int32

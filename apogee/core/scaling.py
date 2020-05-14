@@ -53,11 +53,13 @@ def normalise(
     method: str
         The method of normalisation to be applied.
         'default' - Apply a normalisation transformation such that the array sums to 1.
-        'standard' - Apply standardisation transformation to the array by scaling according to mean
+        'standard' - Apply standardisation transformation to the array by scaling
+                     according to mean
         and std.
         'mean' - Apply a mean normalisation transformation to the array.
         'scale' - Scale the array between specified arbitary bounds 'a' and 'b'.
-        'spectral' - Scale the array such that it has unit spectral radius, then apply arbitrary
+        'spectral' - Scale the array such that it has unit spectral radius, then apply
+                     arbitrary
         scaling factor.
 
     kwargs: see methods

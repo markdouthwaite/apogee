@@ -22,37 +22,39 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 """
 
-import os
-import pkg_resources
+from .undirected import UndirectedModel
+from .directed import BayesianNetwork, DirectedModel
 
-from .base import GraphicalModel
-from apogee.io import read_json
-from apogee.models import variables
+# import os
+# import pkg_resources
 
-BayesianNetwork = GraphicalModel
-
-
-SPEC_BASE: str = pkg_resources.resource_filename("apogee", "models/specs")
-
-
-_models: dict = {
-    "alarm": {"type": "bayes", "path": os.path.join(SPEC_BASE, "alarm.json")}
-}
-
-
-def load_model(name):
-    if name in _models:
-        type = _models[name]["type"]
-        path = _models[name]["path"]
-
-        if type == "bayes":
-            with open(path) as model_file:
-                return read_json(model_file.read())
-        else:
-            raise ValueError("Unknown model type '{type}'.".format(type=type))
-
-    else:
-        raise ValueError("Unknown model name '{name}'.".format(name=name))
+# from .base import GraphicalModel
+# from apogee.models.variables import DiscreteVariable
+#
+# BayesianNetwork = GraphicalModel
+#
+#
+# SPEC_BASE: str = pkg_resources.resource_filename("apogee", "models/specs")
+#
+#
+# _models: dict = {
+#     "alarm": {"type": "bayes", "path": os.path.join(SPEC_BASE, "alarm.json")}
+# }
 
 
-__all__ = ["load_model", "BayesianNetwork", "GraphicalModel"]
+# def load_model(name):
+#     if name in _models:
+#         type = _models[name]["type"]
+#         path = _models[name]["path"]
+#
+#         if type == "bayes":
+#             with open(path) as model_file:
+#                 return read_json(model_file.read())
+#         else:
+#             raise ValueError("Unknown model type '{type}'.".format(type=type))
+#
+#     else:
+#         raise ValueError("Unknown model name '{name}'.".format(name=name))
+
+#
+# __all__ = ["BayesianNetwork", "GraphicalModel"]
