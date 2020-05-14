@@ -5,3 +5,4 @@ tornado
 jupyter
 networkx
 matplotlib
+Cython
