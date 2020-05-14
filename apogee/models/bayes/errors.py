@@ -1,2 +1,0 @@
-class ModelCompilationError(Exception):
-    pass

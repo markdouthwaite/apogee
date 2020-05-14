@@ -1,50 +1,108 @@
+"""
+The MIT License
+
+Copyright (c) 2017-2020 Mark Douthwaite
+"""
+
 import re
 import itertools
 from collections import OrderedDict
+from typing import Text, Tuple, Dict, Any, List, TextIO
 
 import numpy as np
 
-
-def read_hugin(filename):
-    """Read a HUGIN-formatted file."""
-
-    p = HuginReader().read(filename)
-    return p
+from apogee.utils import strings
 
 
-def deformat(s):
-    s = str(s)
-    s = re.sub(r"\n", " ", s)
-    s = re.sub(r"\t", " ", s)
-    return s
+def loads(data: Text) -> Dict[Text, Any]:
+    """Load a model as an Apogee-formatted dict from a HUGIN-formatted string"""
+
+    return HuginReader().parse(data)
+
+
+def load(file: TextIO) -> Dict[Text, Any]:
+    """Load a model as an Apogee-formatted dict from a HUGIN-formatted file."""
+
+    with file:
+        return loads(file.read())
+
+
+class HuginReaderError(Exception):
+    """Generic HuginReader error."""
 
 
 class HuginReader:
-    """Read and build a BayesianNetwork from a HUGIN file."""
+    """
+    A HUGIN parser.
+
+    Provides *limited* parsing capabilities for HUGIN-formatted Bayesian Network files.
+    """
 
     def __init__(self):
         self._data = OrderedDict()
+        self._structure_pattern = re.compile(r"(.*) = \((.*)\)")
+        self._params_pattern = re.compile(r"(.*) = \"(.*)\"")
 
-    def write(self, model: "GraphicalModel", *args, **kwargs):
-        """Write a model as a HUGIN-formatted file."""
-
-        raise NotImplementedError("Writing HUGIN models is not yet supported.")
-
-    def read(self, filename: str) -> dict:
-        """Read a HUGIN-formatted file as an Apogee BayesianNetwork."""
+    def read(self, filename: Text) -> Dict[Text, Any]:
+        """Read a HUGIN-formatted and return in dictionary format."""
 
         with open(filename, "r") as file:
             return self.parse(file.read())
 
-    def parse(self, data: str):
-        nodes, potentials = self._extract(deformat(data.strip()))
+    def parse(self, data: Text) -> Dict[Text, Any]:
+        """Read a HUGIN-formatted string and return in dictionary format."""
 
-        self.parse_nodes(nodes)
-        self.parse_potentials(potentials)
+        nodes, potentials = self._extract(strings.deformat(data.strip()))
+
+        self._parse_nodes(nodes)
+        self._parse_potentials(potentials)
 
         return self.to_dict()
 
-    def parse_nodes(self, nodes):
+    def _parse_node_structure(self, element: Text) -> Tuple[Text, List[Text]]:
+        matches: re.Match = self._structure_pattern.search(element)
+
+        if matches.group(1) == "states":
+            key = matches.group(1)
+            value = matches.group(2).replace('"', "").strip().split(" ")
+
+        elif matches.group(1) == "position":
+            key = matches.group(1)
+            value = [
+                int(x)
+                for x in matches.group(2)
+                    .replace('"', "")
+                    .strip()
+                    .split(" ")
+            ]
+
+        else:
+            raise HuginReaderError(f"Failed to process element '{element}'.")
+
+        return key, value
+
+    def _parse_node_params(self, element: Text) -> Tuple[Text, Text]:
+        matches: re.Match = self._params_pattern.search(element)
+        return matches.group(1), matches.group(2)
+
+    def _parse_node(self, element: Text) -> Tuple[Text, Text]:
+        element = element.strip()
+
+        if self._structure_pattern.search(element) is not None:
+            key, value = self._parse_node_structure(element)
+
+        elif self._params_pattern.search(element) is not None:
+            key, value = self._parse_node_params(element)
+
+        else:
+            raise ValueError(
+                "Encountered unknown error in parsing element. '{0}'".format(
+                    element
+                )
+            )
+        return key, value
+
+    def _parse_nodes(self, nodes: List[List[Text]]) -> None:
         for node in nodes:
             name = node[0].strip()
 
@@ -54,35 +112,10 @@ class HuginReader:
             node_data = [x for x in node_data if len(x) > 0]
 
             for element in node_data:
-                element = element.strip()
-                if re.search(r"(.*) = \((.*)\)", element) is not None:
-                    element = re.search(r"(.*) = \((.*)\)", element)
-                    if element.group(1) == "states":
-                        key = element.group(1)
-                        value = element.group(2).replace('"', "").strip().split(" ")
-                    if element.group(1) == "position":
-                        key = element.group(1)
-                        value = [
-                            int(x)
-                            for x in element.group(2)
-                            .replace('"', "")
-                            .strip()
-                            .split(" ")
-                        ]
-
-                elif re.search(r"(.*) = \"(.*)\"", element) is not None:
-                    element = re.search(r"(.*) = \"(.*)\"", element)
-                    key, value = element.group(1), element.group(2)
-                else:
-                    raise ValueError(
-                        "Encountered unknown error in parsing element. '{0}'".format(
-                            element
-                        )
-                    )
-
+                key, value = self._parse_node(element)
                 self._data[name][key] = value
 
-    def parse_potentials(self, potentials):
+    def _parse_potentials(self, potentials):
         for potential in potentials:
             scope, data = potential
             if re.search(r"\((.*)\|", scope) is not None:
@@ -104,7 +137,7 @@ class HuginReader:
             if "position" not in self._data[key].keys():
                 self._data[key]["position"] = [0, 0, 0]
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict[Text, Any]:
         data = {}
         for key, value in self._data.items():
             del value["position"]
@@ -118,7 +151,7 @@ class HuginReader:
         for key, value in self._data.items():
             local = dict(
                 name=key,
-                cpt=value["cpt"],
+                params=value["params"],
                 states=value["states"],
                 x=value["position"][0],
                 y=value["position"][1],

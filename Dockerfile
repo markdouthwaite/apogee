@@ -1,13 +1,14 @@
 FROM python:3.6.4
 
-WORKDIR /apogee
+RUN apt-get update -y
+RUN apt-get install gcc musl-dev
 
-RUN apk add --no-cache gcc musl-dev linux-headers
-
-COPY requirements.txt requirements.txt
+COPY . ./app
+WORKDIR app
 
 RUN pip install -r requirements.txt
 
-COPY . .
+RUN python setup.py build_ext --inplace
+RUN python setup.py install
 
 CMD ["pytest", "tests"]
