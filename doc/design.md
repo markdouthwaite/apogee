@@ -1,5 +1,8 @@
-# Basic API
-```
+# design
+
+## Basic API
+
+```text
 from apogee import BayesianNetwork, DiscreteVariable as Variable
 
 with BayesianNetwork("simple-bayesian-network") as net:
@@ -12,12 +15,11 @@ net.compile()  # check model structure, build underlying FactorGraph. Silent cal
 
 net.fit(x)  # x -> [{"cloudy": "true", ... "wetgrass": "true"}, ... ]
 net.predict(x)  # x -> [{...}] ->> {"cloudy": {"true": 0.12341, "false": 0.87659}, ...}
-
 ```
 
-# Sci-kit Learn Classifiers
+## Sci-kit Learn Classifiers
 
-```
+```text
 from sklearn.tree import DecisionTreeClassifier
 from apogee import BayesianNetwork, ClassifierVariable, Variable
 
@@ -33,43 +35,39 @@ network.fit()
 network.predict({"iris-variant": [5.7, 2.5, 5.0, 2.0], "light-levels": "good")["plant-health"]
 
 {"plant-health": {"fabulous": 0.87, "good": 0.12, "poor": 0.01}}
-
 ```
 
-## NetworkX
+### NetworkX
 
-```
-
+```text
 net.graph
-
 ```
 
-# I/O
-```
+## I/O
+
+```text
 from apogee.io import read_json, read_hugin
 
 net = read_json("bayes-net.json")
 net = read_hugin("bayes-net.net")
-
 ```
 
-# REST service
+## REST service
 
-```
+```text
 from apogee.rest import RESTService 
 
 service = RESTService(model=net, port=8080, address="127.0.0.1")
-service.run() 
+service.run()
 ```
 
-# Low-level API
+## Low-level API
 
-```
-
+```text
 graph = FactorGraph()
 graph.add(DiscreteFactor([0, 1], [2, 2], ...))
 graph.add(DiscreteFactor([1, 2], ...))
 
 graph.query(...)
-
 ```
+
