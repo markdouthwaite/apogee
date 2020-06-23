@@ -2,5 +2,5 @@
 
 * [Apogee](README.md)
 * [Info](doc/README.md)
-  * [design](doc/design.md)
+  * [Design Notes](doc/design.md)
 
