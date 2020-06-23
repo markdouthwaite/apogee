@@ -2,7 +2,7 @@
 
 ## Basic API
 
-```text
+```python
 from apogee import BayesianNetwork, DiscreteVariable as Variable
 
 with BayesianNetwork("simple-bayesian-network") as net:
@@ -19,7 +19,7 @@ net.predict(x)  # x -> [{...}] ->> {"cloudy": {"true": 0.12341, "false": 0.87659
 
 ## Sci-kit Learn Classifiers
 
-```text
+```python
 from sklearn.tree import DecisionTreeClassifier
 from apogee import BayesianNetwork, ClassifierVariable, Variable
 
@@ -45,7 +45,7 @@ net.graph
 
 ## I/O
 
-```text
+```python
 from apogee.io import read_json, read_hugin
 
 net = read_json("bayes-net.json")
@@ -54,7 +54,7 @@ net = read_hugin("bayes-net.net")
 
 ## REST service
 
-```text
+```python
 from apogee.rest import RESTService 
 
 service = RESTService(model=net, port=8080, address="127.0.0.1")
@@ -63,7 +63,7 @@ service.run()
 
 ## Low-level API
 
-```text
+```python
 graph = FactorGraph()
 graph.add(DiscreteFactor([0, 1], [2, 2], ...))
 graph.add(DiscreteFactor([1, 2], ...))
